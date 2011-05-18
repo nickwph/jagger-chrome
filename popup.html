@@ -1,0 +1,80 @@
+<style>
+	.sameWidth { 
+		width:280px;
+	}
+	.boxHeight {
+		height:100px;
+	}
+	.prompt {
+		font-size:12px;
+	}
+</style>
+
+<body style="width:280px; height:180px;">
+	JavaScript to be injected...<br />
+	<textarea id="textBox" class="sameWidth boxHeight"></textarea><br />
+	<input id="saveBox" type="checkbox" value="yes"/>Save Script<br />
+	<input id="runBox" type="checkbox" />Do the same injection next time.<br />
+	<button id="submitBtn" class="sameWidth">Inject Now!</button><br />
+	<!-- <button id="veiwBtn" class="sameWidth">View Saved Scripts</button><br /> -->
+	<div class="prompt">jQuery is enabled.</div>
+	<div class="prompt">You can view and edit scripts in Options.</div>
+	<div class="prompt" id="debug"></div>
+</body>
+	
+<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+
+<script type="text/javascript">
+	const BACKGROUND = chrome.extension.getBackgroundPage();
+
+	var isDebugging = BACKGROUND.isDebugging;
+	
+	if (isDebugging) {
+		debug("Popup: Debug Mode On");
+	}
+
+	function debug(string) {
+		if (isDebugging)
+			console.log(string);
+	}
+
+	// ------------------------------------------------------------ //
+	
+	$("#submitBtn").click(function(){
+		BACKGROUND.injectScript( $("#textBox").val() );
+		debug("Script Injected. " + $("#textBox").val());
+		$("#debug").html( "Injected." );
+		
+		if( $("#saveBox").attr("checked") ) {
+			
+			var saveCode = "";
+			if( $("#runBox").attr("checked") ) 
+				saveCode = "1" + $("#textBox").val();
+			else
+				saveCode = "0" + $("#textBox").val();
+			
+			BACKGROUND.saveScript( saveCode );
+			debug("Saved: " + saveCode);
+			$("#debug").html( "Injected and Saved." );
+		}
+		else
+			BACKGROUND.saveScript( "" );
+	});
+
+	$("#veiwBtn").click(function() {
+		chrome.tabs.create({url:"chrome-extension://haclleifmmncjioglhcblnggaikphpcb/options.html"});
+	});
+
+	// ------------------------ On Load ------------------------- //
+	$("#textBox").focus();
+	$("#saveBox").attr('checked', true);
+	$("#runBox").attr('checked', true);
+	
+	chrome.windows.getCurrent(function(window) {
+		chrome.tabs.getSelected(window.id, function(tab){
+			$("#textBox").html( BACKGROUND.checkScript(tab.url) );
+			debug( BACKGROUND.checkScript(tab.url) );
+		});
+	});
+</script>
+
