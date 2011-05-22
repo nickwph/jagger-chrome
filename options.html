@@ -1,94 +1,107 @@
 <html>
+	
+<head>
+	<title>Javascript</title>
+  <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+  <script type="text/javascript" src="js/cufon-yui.js"></script>
+	<script type="text/javascript" src="js/vegur.font.js"></script>
 	<style>
-		table {
-			border-collapse:collapse;
+		textarea {
+			font-family:"Courier New";
+			width:100%;
+			overflow:visible;
 		}
-		table, td, th {
-			border:1px solid black;
+		#script table {
+			border:1px solid #D0DAFD;
+			width:100%;
+		}
+		#script table tr td{
+			background-color:#D0DAFD;
+		}
+		#container {
+			margin:auto;
+			width:800px;
 		}
 	</style>
+</head>
 
-	<body>
-		<h1>JavaScript Injector: Nicholas Workshop</h1>
-		<div id="scriptTable"></div>
-		<div id="dom2"></div>
-		<a id="selectAll" href="#">Select All</a> 
-		<a id="selectNone" href="#">Select None</a><br /><br />
-		<button id="delSelectedBtn">Delete Selected Scripts</button>
-		<button id="delAllBtn">Delete All Scripts</button>
-		<button id="refreshTableBtn">Refresh Script Table</button><br />
-		PS. jQuery is already injected.
-		Developed by Nicholas Wong
-	</body>
+<body>
+	<div id="container">
+    <div id="info">
+    	<div id="title">JavaScript Injector: Nicholas Workshop</div>
+      <div id="description">You can inject javascript to the page</div>
+    </div>
+    <div id="control">
+    	<div id="select">
+        <a id="all" href="#">Select All</a> 
+        <a id="none" href="#">Select None</a>
+      </div>
+      <div id="action">
+        <button id="remove">Delete Selected Scripts</button>
+        <button id="refresh">Refresh Script Table</button>
+      </div>
+    </div>
+    <div id="script"></div>
+    <div id="copyright">PS. jQuery is already injected. Developed by Nicholas Wong</div>
+  </div>
+</body>
 	
-	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+<script>
+
+	//__SETTING__//
+	Cufon.replace('body', { fontFamily: 'Vegur' }); 
+	const background = chrome.extension.getBackgroundPage();
 	
-	<script>
-		const BACKGROUND = chrome.extension.getBackgroundPage();
-		
-		var isDebugging = BACKGROUND.isDebugging;
-		
-		if (isDebugging) {
-			debug("Option: Debug Mode On");
+	//__DEBUG__//
+	var debug = {
+		mode: true,
+		log: function(string) { 
+			if (this.mode) background.console.log("O: " + string); 
 		}
-		
-		function debug(string) {
-			if (isDebugging)
-				console.log(string);
+	}
+	
+	//__ONLOAD__//
+	debug.log("Debug Mode");
+	refresh();
+	
+	//__DISPLAY__//
+	function refresh() {
+		var code = "<table>"
+		//code += "<tr><th></th><th>Webpage URL</th><th>[Run Always] Script Saved</th></tr>";
+		code += "<tr><th></th><th>SCRIPTS</th></tr>";
+		for (var i=0; i<background.storage.length(); i++) {
+			code += "<tr>";
+				code += "<td>";
+					code += "<input type='checkbox' alt='"+background.storage.get(i).id+"' />";
+				code += "</td>";
+				code += "<td>";
+					code += "<div>URL: "+background.storage.get(i).url+"</div>";
+					code += "<textarea>"+background.storage.get(i).script+"</textarea>";
+				code += "</td>";
+			code += "</tr>";
 		}
+		code += "</table>";
+		$("#script").html(code);
+	}
 
-		// ------------------------------------------------------------ //
-		
-		function printScriptTable() {
-			var myCode = "<table>"
-			myCode += "<tr><th></th><th>Webpage URL</th><th>[Run Always] Script Saved</th></tr>";
-			for (var i=0; i<BACKGROUND.getSavedCount(); i++) {
-				myCode += "<tr>";
-				myCode += "<td><input type='checkbox' class='selectable' id='" + i + "' /></td>";
-				myCode += "<td>" + BACKGROUND.getAddress(i) + "</td>";
-				myCode += "<td><input type='checkbox' onclick='BACKGROUND.setRunAtBegin(" + i + ")' " + BACKGROUND.getRunAtBegin(i) + "/>" + BACKGROUND.getScript(i) + "</td>";
-				myCode += "</td>";
-			}
-			myCode += "</table>";
-			$("#scriptTable").html(myCode);
-			//debug("Script Table Refreshed.");
+	//__LISTENER__//
+	$("#select #all").click( function() { 
+		$("input:checkbox").attr('checked', true); 
+	});
+	$("#select #none").click(function() { 
+		$("input:checkbox").attr('checked', false); 
+	});
+	$("#action #remove").click(function() {
+		if( confirm ("Are you sure to remove the selected script(s)?") ) {
+			$("input:checked").each(function(){
+				background.storage.remove( $(this).attr("alt") );
+			});
+			refresh();
 		}
-
-		// ------------------------------------------------------------ //
-		
-		$("#selectAll").click(function() {
-			$(".selectable").attr('checked', true);
-			debug("All Scripts Selected.");
-		});
-
-		$("#selectNone").click(function() {
-			$(".selectable").attr('checked', false);
-			debug("Scripts Deselected.");
-		});
-
-		$("#delSelectedBtn").click(function() {
-			if( confirm ("Are you sure to delete the selected scripts?\nThere is no way to recover.") ) {
-				$(".selectable:checked").each(function(){
-					debug("Deleting Script ID " + $(this).attr("id"));
-					BACKGROUND.delScript( $(this).attr("id") );
-				});
-				printScriptTable();
-			}
-		});
-		
-		$("#delAllBtn").click(function() {
-			if( confirm ("Are you sure to delete all scripts?\nThere is no way to recover.") ) {
-				BACKGROUND.delAllScript();
-				printScriptTable();
-				debug("Deleted All Scripts.");
-			}
-		});
-
-		$("#refreshTableBtn").click(function() {
-			printScriptTable();
-			debug("Script Table Refreshed.");
-		});
-		
-		printScriptTable();
-	</script>
+	});
+	$("#action #refresh").click(function() {
+		refresh();
+	});
+	
+</script>
 </html>

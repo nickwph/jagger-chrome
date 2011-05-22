@@ -1,132 +1,86 @@
-<html>
-	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-	<script>
-		var isDebugging = true;
-		
-		if (isDebugging) {
-			debug("Background: Debug Mode On");
-		}
-		
-		function debug(string) {
-			if (isDebugging)
-				console.log(string);
-		}
+<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
 
-		// ------------------------------------------------------------ //
-		
-		function injectScript(myScript){
-			chrome.windows.getCurrent(function(window) {
-				chrome.tabs.getSelected(window.id, function(tab){
-					chrome.tabs.executeScript(tab.id, {code:myScript});
-				});
-			});
-			debug("Injected Script: " + myScript);
-		}
+<script>
 
-		function saveScript(myCode){
-			chrome.windows.getCurrent(function(window) {
-				chrome.tabs.getSelected(window.id, function(tab){
-					localStorage[tab.url] = myCode;
-				});
-			});
-			debug("Script Saved: " + myCode);
-		}
+//__DEBUG__//
+var debug = {
+	mode: true,
+	log: function(string) { 
+		if (this.mode) console.log("B: "+string); 
+	}
+}
 
-		function getSavedCount(){
-			debug("Retrieved Number of Scripts: " + localStorage.length);
-			return localStorage.length;
-		}
+//__ONLOAD__//
+debug.log("Debug Mode");
 
-		function getScript(num) {
-			debug("Retrieved Scripts[" + num + "]: " + localStorage.getItem( localStorage.key(num) ).substring(1));
-			return localStorage.getItem( localStorage.key(num) ).substring(1);
-		}
-		
-		function getRunAtBegin(num) {
-			var run = (localStorage.getItem( localStorage.key(num) ).substring(0,1) == 1)?"checked":"";
-			var runBool = (localStorage.getItem( localStorage.key(num) ).substring(0,1) == 1)?true:false;
-			debug("Retrieved RunAtBegin[" + num + "]: " + runBool);
-			return run;
-		}
+//__INJECT__//
+function inject(detail) {
+	if (detail.save) storage.save(detail);
+	javascript.run(detail);
+	debug.log("Injected.");
+}
 
-		function getRunAtBeginBool(num) {
-			return (localStorage.getItem( localStorage.key(num) ).substring(0,1) == 1)?true:false;
-		}
-
-		function setRunAtBegin(num) {
-			var run = (getRunAtBeginBool())?"0":"1";
-			localStorage.setItem( getAddress(num), run + getScript(num) );
-			debug("Set RunAtBegin[" + num + "] to " + getRunAtBegin(num));
-		}
-		
-		function getAddress(num) {
-			debug("Retrieved Address[" + num + "]: " + localStorage.key(num));
-			return localStorage.key(num);
-		}
-
-		function delAllScript() {
-			debug("Deleted All Scripts.");
-			localStorage.clear();
-		}
-
-		function delScript(num) {
-			debug("Deleted Scripts[" + num + "] for " + localStorage.key(num));
-			localStorage.removeItem( localStorage.key(num) );  
-		}
-		
-		function checkScript(url) {
-			for (var i=0; i<localStorage.length; i++) {
-				if (localStorage.key(i) == url) {
-					debug("This page has script saved: " + getScript(i));
-					return getScript(i);
-				}
+//__STORAGE__//
+var storage = {
+	save: function(detail) {
+		var id = this.contain(detail.url); //check existance
+		if (id == -1) id = localStorage.length; //override the old save
+		detail.id = id;
+		localStorage[id] = JSON.stringify(detail);
+		return id;
+	},
+	get: function(id) {
+		return JSON.parse(localStorage[id]);
+	},
+	remove: function(id) {
+		localStorage.removeItem(id);
+	},
+	length: function() {
+		return localStorage.length;
+	},
+	contain: function(url) {
+		for (var i=0; i<this.length(); i++) {
+			if (url.match(this.get(i).url)) {
+				return i;
 			}
-			debug("This page has NO script saved!");
-			//return "This page has NO script saved!";
-			return "";
 		}
-		
-		function checkScriptId(url) {
-			for (var i=0; i<localStorage.length; i++) {
-				if (localStorage.key(i) == url) {
-					return i;
-				}
-			}
-			return null;
-		}
+		return -1;
+	}
+}
 
-		// ------------------------------------------------------------ //
-		
-		chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
-			chrome.tabs.get(tabId, function(tab) { 
-				var myScriptId = checkScriptId(tab.url);
-				if (myScriptId != null) 
-					if ( getRunAtBeginBool(myScriptId) ) {
-						debug("Script is available for this page and needed to be injected.");
-						injectScript( getScript(myScriptId) );
-					}
-					else{
-						debug("Script is available for this page but not injecting.");
-					}
-				else
-					debug("Script is unavailable.");
+//__FUNCTIONS__//
+var javascript = {
+	execute: function(script) {
+		chrome.windows.getCurrent(function(window) {
+			chrome.tabs.getSelected(window.id, function(tab){
+				chrome.tabs.executeScript(tab.id, {code:script});
 			});
 		});
-
-		chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
-			var myScriptId = checkScriptId(tab.url);
-			if (myScriptId != null) 
-				if ( getRunAtBeginBool(myScriptId) ) {
-					debug("Script is available for this page and needed to be injected.");
-					injectScript( getScript(myScriptId) );
-				}
-				else{
-					debug("Script is available for this page but not injecting.");
-				}
-			else
-				debug("Script is unavailable.");
+	},
+	insert: function(file) {
+		chrome.windows.getCurrent(function(window) {
+			chrome.tabs.getSelected(window.id, function(tab){
+				chrome.tabs.executeScript(tab.id, {file:file});
+			});
 		});
+	},
+	run: function(packet) {
+		for (i in packet.include) {
+			this.insert(packet.include[i]);
+		}
+		this.execute(packet.script);
+	}
+}
 
-		
-	</script>
-</html>
+//__LISTENERS__//
+chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+	if (info.status == "complete") { //run when the page finished loading, otherwise it fires twice
+		var id = storage.contain(tab.url);
+		if (id != -1 && storage.get(id).autorun) {
+			javascript.run(storage.get(id));
+			debug.log("Existing script executed.");
+		}
+	}
+});
+	
+</script>

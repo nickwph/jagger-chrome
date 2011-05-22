@@ -1,80 +1,128 @@
-<style>
-	.sameWidth { 
-		width:280px;
-	}
-	.boxHeight {
-		height:100px;
-	}
-	.prompt {
-		font-size:12px;
-	}
-</style>
+<html>
 
-<body style="width:280px; height:180px;">
-	JavaScript to be injected...<br />
-	<textarea id="textBox" class="sameWidth boxHeight"></textarea><br />
-	<input id="saveBox" type="checkbox" value="yes"/>Save Script<br />
-	<input id="runBox" type="checkbox" />Do the same injection next time.<br />
-	<button id="submitBtn" class="sameWidth">Inject Now!</button><br />
-	<!-- <button id="veiwBtn" class="sameWidth">View Saved Scripts</button><br /> -->
-	<div class="prompt">jQuery is enabled.</div>
-	<div class="prompt">You can view and edit scripts in Options.</div>
-	<div class="prompt" id="debug"></div>
+<head>
+	<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="js/cufon-yui.js"></script>
+	<script type="text/javascript" src="js/vegur.font.js"></script>
+	<style>
+		body {
+			width:500px; 
+			height:300px;
+		}
+		#url {
+			width:500px;
+		}
+		#include {
+			width:500px;
+		}
+		#script {
+			width:500px;
+			height:200px;
+		}
+		#option {
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+	
+	<div id="info">
+    <div id="title">JavaScript Injector</div>
+    <div id="description">You can inject javascript to the page</div>
+  </div>
+  <div id="detail"> 
+    URL: <input type="text" id="url"/>
+    SCRIPTS: <input type="text" id="include"/>
+    SCRIPTS: <textarea id="script"></textarea>
+  </div>
+  <div id="option">
+    <input type="checkbox" id="save"/>Save
+    <input type="checkbox" id="autorun"/>Autorun
+    <input type="checkbox" id="jquery"/>jQuery
+  </div>
+  <div id="button">
+  	<button id="reload">Reload Script</button>
+  	<button id="submit">Inject Now!</button>
+  </div>
+	<!-- <button id="veiwBtn">View Saved Scripts</button> -->
+	<!-- <div class="prompt">jQuery is enabled.</div> -->
+	<!-- <div class="prompt">You can view and edit scripts in Options.</div> -->
+	<!-- <div class="prompt" id="debug"></div> -->
 </body>
 	
-<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-
 <script type="text/javascript">
-	const BACKGROUND = chrome.extension.getBackgroundPage();
 
-	var isDebugging = BACKGROUND.isDebugging;
+	//__SETTING__//
+	Cufon.replace('body', { fontFamily: 'Vegur' }); 
+	const background = chrome.extension.getBackgroundPage();
 	
-	if (isDebugging) {
-		debug("Popup: Debug Mode On");
-	}
-
-	function debug(string) {
-		if (isDebugging)
-			console.log(string);
-	}
-
-	// ------------------------------------------------------------ //
-	
-	$("#submitBtn").click(function(){
-		BACKGROUND.injectScript( $("#textBox").val() );
-		debug("Script Injected. " + $("#textBox").val());
-		$("#debug").html( "Injected." );
-		
-		if( $("#saveBox").attr("checked") ) {
-			
-			var saveCode = "";
-			if( $("#runBox").attr("checked") ) 
-				saveCode = "1" + $("#textBox").val();
-			else
-				saveCode = "0" + $("#textBox").val();
-			
-			BACKGROUND.saveScript( saveCode );
-			debug("Saved: " + saveCode);
-			$("#debug").html( "Injected and Saved." );
+	//__DEBUG__//
+	var debug = {
+		mode: true,
+		log: function(string) { 
+			if (this.mode) background.console.log("P: "+string); 
 		}
-		else
-			BACKGROUND.saveScript( "" );
-	});
-
-	$("#veiwBtn").click(function() {
-		chrome.tabs.create({url:"chrome-extension://haclleifmmncjioglhcblnggaikphpcb/options.html"});
-	});
-
-	// ------------------------ On Load ------------------------- //
-	$("#textBox").focus();
-	$("#saveBox").attr('checked', true);
-	$("#runBox").attr('checked', true);
+	}
 	
-	chrome.windows.getCurrent(function(window) {
-		chrome.tabs.getSelected(window.id, function(tab){
-			$("#textBox").html( BACKGROUND.checkScript(tab.url) );
-			debug( BACKGROUND.checkScript(tab.url) );
-		});
+	//__ONLOAD__//
+	debug.log("Debug Mode");
+
+	//__FUNCTIONS__//
+	var load = {
+		script: function() {
+			chrome.windows.getCurrent(function(window) {
+				chrome.tabs.getSelected(window.id, function(tab){
+					var id = background.storage.contain(tab.url);
+					if (id != -1) {
+						$("#detail #script").html(background.storage.get(id).script);
+					}
+				});
+			});
+		},
+		url: function() {
+			chrome.windows.getCurrent(function(window) {
+				chrome.tabs.getSelected(window.id, function(tab){
+					var id = background.storage.contain(tab.url);
+					if (id != -1) {
+						$("#detail #url").val(background.storage.get(id).url);
+					}
+					else {
+						$("#detail #url").val(tab.url);
+					}
+				});
+			});
+		}
+	}
+	
+	//__LISTENERS__//
+	$("#button #submit").click(function() {
+		var include = [];
+		if ($("#option #jquery").attr('checked')) {
+			include.push("js/jquery-1.6.1.min.js");
+		}
+		var detail = {
+			id      : null,
+			url     : $("#detail #url").val(),
+			script  : $("#detail #script").val(),
+			save    : $("#option #save").val(),
+			autorun : $("#option #autorun").val(),
+			include : include
+		};
+		background.inject(detail);
 	});
+	$("#button #reload").click(function() {
+		load.script();
+		load.url();
+	});
+	
+	//__ONLOAD__//
+	$("#detail #script").focus();
+	$("#option #save").attr('checked', true);
+	$("#option #autorun").attr('checked', true);
+	$("#option #jquery").attr('checked', true);
+	load.script();
+	load.url();
+
 </script>
 
