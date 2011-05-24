@@ -2,39 +2,29 @@
 
 <head>
 	<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-	<script type="text/javascript" src="js/cufon-yui.js"></script>
-	<script type="text/javascript" src="js/vegur.font.js"></script>
-	<style>
-		body {
-			width:500px; 
-			height:300px;
-		}
-		#url {
-			width:500px;
-		}
-		#include {
-			width:500px;
-		}
-		#script {
-			width:500px;
-			height:200px;
-		}
-		#option {
-      font-size:12px;
-    }
-  </style>
+  <script type="text/javascript" src="js/typeface-0.15.js"></script>
+  <script type="text/javascript" src="js/optimer_bold_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_bold.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_regular.typeface.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/popup.css"/> 
 </head>
 
-<body>
+<body class="typeface-js">
 	
 	<div id="info">
-    <div id="title">JavaScript Injector</div>
+    <div id="title"><strong>JavaScript Injector</div></strong>
     <div id="description">You can inject javascript to the page</div>
+    <div id="divider"></div>
   </div>
   <div id="detail"> 
-    URL: <input type="text" id="url"/>
-    SCRIPTS: <input type="text" id="include"/>
-    SCRIPTS: <textarea id="script"></textarea>
+    <span>Url: (Regular Expression Enabled)</span>
+    <input type="text" id="url"/>
+    <span>Includes Javascript: </span>
+    <img class="include plus" src="img/plus.png"/>
+    <div class="include"><input type="text" class="include"/></div>
+    <span>Script: </span>
+    <textarea id="script"></textarea>
   </div>
   <div id="option">
     <input type="checkbox" id="save"/>Save
@@ -45,16 +35,12 @@
   	<button id="reload">Reload Script</button>
   	<button id="submit">Inject Now!</button>
   </div>
-	<!-- <button id="veiwBtn">View Saved Scripts</button> -->
-	<!-- <div class="prompt">jQuery is enabled.</div> -->
-	<!-- <div class="prompt">You can view and edit scripts in Options.</div> -->
-	<!-- <div class="prompt" id="debug"></div> -->
+  <div id="copyright">© Nicholas Workshop</div>
 </body>
 	
 <script type="text/javascript">
 
 	//__SETTING__//
-	Cufon.replace('body', { fontFamily: 'Vegur' }); 
 	const background = chrome.extension.getBackgroundPage();
 	
 	//__DEBUG__//
@@ -64,33 +50,66 @@
 			if (this.mode) background.console.log("P: "+string); 
 		}
 	}
-	
-	//__ONLOAD__//
-	debug.log("Debug Mode");
+
+	//__STORAGE__//
+	var storage = {
+		tab: null,
+		packet: null
+	}
 
 	//__FUNCTIONS__//
 	var load = {
-		script: function() {
+		init: function(callback) {
 			chrome.windows.getCurrent(function(window) {
 				chrome.tabs.getSelected(window.id, function(tab){
-					var id = background.storage.contain(tab.url);
+					storage.tab = tab;
+					var id = background.storage.contain(storage.tab.url);
 					if (id != -1) {
-						$("#detail #script").html(background.storage.get(id).script);
+						storage.packet = background.storage.get(id);
 					}
+					callback();
 				});
 			});
 		},
+		script: function() {
+			if (storage.packet) $("#detail #script").html(storage.packet.script);
+		},
 		url: function() {
-			chrome.windows.getCurrent(function(window) {
-				chrome.tabs.getSelected(window.id, function(tab){
-					var id = background.storage.contain(tab.url);
-					if (id != -1) {
-						$("#detail #url").val(background.storage.get(id).url);
-					}
-					else {
-						$("#detail #url").val(tab.url);
-					}
-				});
+			if (storage.packet) $("#detail #url").val(storage.packet.url);
+			else $("#detail #url").val(storage.tab.url);
+		},
+		save: function() {
+			if (storage.packet) $("#option #save").attr('checked', storage.packet.save);
+			else $("#option #save").attr('checked', true);
+		},
+		autorun: function() {
+			if (storage.packet) $("#option #autorun").attr('checked', storage.packet.autorun);
+			else $("#option #autorun").attr('checked', true);
+		},
+		jquery: function() {
+			if (storage.packet) $("#option #jquery").attr('checked', storage.packet.jquery);
+			else $("#option #jquery").attr('checked', false);
+		},
+		include: function() {
+			if (storage.packet) {
+				$(storage.packet.include).each(function() {
+					$('<div class="include"><input type="text" class="include" value="'+this+'"/><img class="include minus" src="img/minus.png"/></div>')
+						.insertAfter("#detail div.include:last");
+					$("img.include.minus").click(function() {
+						$(this).parent().remove();
+					});
+					$("#detail input.include:first").remove();
+        });
+			}
+		},
+		all: function() {
+			load.init(function() {
+				load.script();
+				load.url();
+				load.include();
+				load.save();
+				load.autorun();
+				load.jquery();
 			});
 		}
 	}
@@ -98,31 +117,35 @@
 	//__LISTENERS__//
 	$("#button #submit").click(function() {
 		var include = [];
-		if ($("#option #jquery").attr('checked')) {
-			include.push("js/jquery-1.6.1.min.js");
-		}
+		$("#detail input.include").each(function() {
+			include.push($(this).val());
+    });
 		var detail = {
 			id      : null,
 			url     : $("#detail #url").val(),
 			script  : $("#detail #script").val(),
-			save    : $("#option #save").val(),
-			autorun : $("#option #autorun").val(),
+			save    : $("#option #save").attr('checked'),
+			autorun : $("#option #autorun").attr('checked'),
+			jquery  : $("#option #jquery").attr('checked'),
 			include : include
 		};
-		background.inject(detail);
+		background.inject(storage.tab, detail);
 	});
 	$("#button #reload").click(function() {
-		load.script();
-		load.url();
+		location.reload(true);
+	});
+	$("img.include.plus").click(function() {
+		$('<div class="include"><input type="text" class="include"/><img class="include minus" src="img/minus.png"/></div>')
+			.insertAfter("#detail div.include:last");
+		$("img.include.minus").click(function() {
+			$(this).parent().remove();
+		});
 	});
 	
 	//__ONLOAD__//
+	debug.log("Debug Mode");
 	$("#detail #script").focus();
-	$("#option #save").attr('checked', true);
-	$("#option #autorun").attr('checked', true);
-	$("#option #jquery").attr('checked', true);
-	load.script();
-	load.url();
-
+	load.all();
+	
 </script>
 

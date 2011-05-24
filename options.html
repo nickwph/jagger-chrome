@@ -3,9 +3,17 @@
 <head>
 	<title>Javascript</title>
   <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-  <script type="text/javascript" src="js/cufon-yui.js"></script>
-	<script type="text/javascript" src="js/vegur.font.js"></script>
+  <script type="text/javascript" src="js/typeface-0.15.js"></script>
+  <script type="text/javascript" src="js/optimer_bold_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_bold.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_regular.typeface.js"></script>
+  
 	<style>
+		body {
+			font-family:Optimer;
+			font-size:14px;
+		}
 		textarea {
 			font-family:"Courier New";
 			width:100%;
@@ -14,6 +22,8 @@
 		#script table {
 			border:1px solid #D0DAFD;
 			width:100%;
+			font-family:Optimer;
+			font-size:14px;
 		}
 		#script table tr td{
 			background-color:#D0DAFD;
@@ -49,7 +59,6 @@
 <script>
 
 	//__SETTING__//
-	Cufon.replace('body', { fontFamily: 'Vegur' }); 
 	const background = chrome.extension.getBackgroundPage();
 	
 	//__DEBUG__//
@@ -66,17 +75,17 @@
 	
 	//__DISPLAY__//
 	function refresh() {
-		var code = "<table>"
-		//code += "<tr><th></th><th>Webpage URL</th><th>[Run Always] Script Saved</th></tr>";
+		var code = "<table>";
 		code += "<tr><th></th><th>SCRIPTS</th></tr>";
-		for (var i=0; i<background.storage.length(); i++) {
+		//for (var i=0; i<background.storage.length(); i++) {
+		for (id in background.storage.data) {
 			code += "<tr>";
 				code += "<td>";
-					code += "<input type='checkbox' alt='"+background.storage.get(i).id+"' />";
+					code += "<input type='checkbox' alt='"+id+"' />";
 				code += "</td>";
 				code += "<td>";
-					code += "<div>URL: "+background.storage.get(i).url+"</div>";
-					code += "<textarea>"+background.storage.get(i).script+"</textarea>";
+					code += "<div>URL: "+background.storage.get(id).url+"</div>";
+					code += "<textarea>"+background.storage.get(id).script+"</textarea>";
 				code += "</td>";
 			code += "</tr>";
 		}

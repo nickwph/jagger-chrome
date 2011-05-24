@@ -7,6 +7,9 @@ var debug = {
 	mode: true,
 	log: function(string) { 
 		if (this.mode) console.log("B: "+string); 
+	},
+	storage: function() {
+		console.log(localStorage);
 	}
 }
 
@@ -14,10 +17,12 @@ var debug = {
 debug.log("Debug Mode");
 
 //__INJECT__//
-function inject(detail) {
+function inject(tab, detail) {
 	if (detail.save) storage.save(detail);
-	javascript.run(detail);
-	debug.log("Injected.");
+	storage.tab = tab;
+	javascript.run(detail, function() {
+		debug.log("Injected.");
+	});
 }
 
 //__STORAGE__//
@@ -39,36 +44,58 @@ var storage = {
 		return localStorage.length;
 	},
 	contain: function(url) {
-		for (var i=0; i<this.length(); i++) {
-			if (url.match(this.get(i).url)) {
-				return i;
+		for (id in storage.data) {
+			if (url.match(storage.get(id).url)) {
+				return id;
 			}
 		}
 		return -1;
-	}
+	},
+	data: localStorage,
+	tab: null
 }
 
 //__FUNCTIONS__//
 var javascript = {
-	execute: function(script) {
-		chrome.windows.getCurrent(function(window) {
-			chrome.tabs.getSelected(window.id, function(tab){
-				chrome.tabs.executeScript(tab.id, {code:script});
+	execute: {
+		script: function(script, callback) {
+			chrome.tabs.executeScript(storage.tab.id, {code:script}, function() {
+				debug.log("Script executed: "+script.substr(0,20).replace("\n"," "));
+				callback();
+				return;
 			});
-		});
-	},
-	insert: function(file) {
-		chrome.windows.getCurrent(function(window) {
-			chrome.tabs.getSelected(window.id, function(tab){
-				chrome.tabs.executeScript(tab.id, {file:file});
+		},
+		file: function(file, callback) {
+			chrome.tabs.executeScript(storage.tab.id, {file:file}, function() {
+				debug.log("File executed: "+script.substr(0,20).replace("\n"," "));
+				callback();
+				return;
 			});
-		});
-	},
-	run: function(packet) {
-		for (i in packet.include) {
-			this.insert(packet.include[i]);
 		}
-		this.execute(packet.script);
+	},
+	include: function(include, callback) {
+		var done = include.length;
+		for (i in include) {
+			$.get(include[i], function(data) {
+				javascript.execute.script(data, function() {
+					if ((--done)==0) callback();
+					return;
+				});
+			});
+		}
+		if (include.length==0) callback(); //no include
+	},
+	run: function(packet, callback) { //jquery->includes->scripts
+		javascript.jquery(packet.jquery, function() {
+			javascript.include(packet.include, function() {
+				javascript.execute.script(packet.script, callback);
+				return;
+			});
+		});
+	},
+	jquery: function(add, callback) { //first arg: add or not
+		if (add) javascript.execute.file("js/jquery-1.6.1.min.js", callback);
+		else callback();
 	}
 }
 
@@ -76,9 +103,11 @@ var javascript = {
 chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
 	if (info.status == "complete") { //run when the page finished loading, otherwise it fires twice
 		var id = storage.contain(tab.url);
-		if (id != -1 && storage.get(id).autorun) {
-			javascript.run(storage.get(id));
-			debug.log("Existing script executed.");
+		if (id != -1 && storage.get(id).autorun) { //check existance and autorun
+			storage.tab = tab;
+			javascript.run(storage.get(id), function() { //run functions
+				debug.log("Existing script executed.");
+			});
 		}
 	}
 });
