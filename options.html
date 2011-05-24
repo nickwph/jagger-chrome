@@ -3,34 +3,120 @@
 <head>
 	<title>Javascript</title>
   <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-  <script type="text/javascript" src="js/typeface-0.15.js"></script>
-  <script type="text/javascript" src="js/optimer_bold_italic.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_bold.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_italic.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_regular.typeface.js"></script>
   
 	<style>
 		body {
-			font-family:Optimer;
-			font-size:14px;
+			font-family:Arial, Helvetica, sans-serif;
+			font-size:12px;
+		}
+		#info #title {
+			font-size:20px;
+		}
+		#info #divider {
+			background:repeat-x center url('img/divider.png')  ;
+			padding-top:5px;
+			height:1px;
+		}
+		#info {
+			margin-bottom:15px;
 		}
 		textarea {
-			font-family:"Courier New";
 			width:100%;
 			overflow:visible;
 		}
 		#script table {
 			border:1px solid #D0DAFD;
 			width:100%;
-			font-family:Optimer;
-			font-size:14px;
+			
+			font-family:Arial, Helvetica, sans-serif;
+			font-size:12px;
 		}
 		#script table tr td{
+			background-color:#E8F2FE;
+			padding-top:10px;
+			padding-bottom:10px;
+		}
+		#script table tr td:hover{
 			background-color:#D0DAFD;
 		}
 		#container {
 			margin:auto;
 			width:800px;
+		}
+		#control #select{
+			float:left;
+		}
+		#control #action {
+			float:right;
+		}
+		#control {
+			margin-top:10px;
+		}
+		#copyright {
+			text-align:center;
+			margin-top:45px;
+		}
+		button {
+			-webkit-user-select: none;
+			margin-bottom: 2px;
+			position: relative;
+			display: inline-block;
+			background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F9F9F9),to(#E3E3E3));
+			margin: 0 8px 0 0;
+			padding: 3px 8px;
+			text-align: center;
+			vertical-align: middle;
+			white-space: nowrap;
+			cursor: default;
+			outline: none;
+			color: black;
+			border: 1px solid #BBB;
+			border-radius: 3px;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-top-color: #CCC;
+			border-bottom-color: #A0A0A0;
+		}
+		button:hover {
+			border-color: #939393!important;
+		}
+		button:active {
+			background: -webkit-gradient(linear,0% 40%,0% 70%,from(#E3E3E3),to(#F9F9F9));
+			border-color: #444!important;
+		}
+		.detail input, .detail textarea {
+			border:1px solid #999;
+			font-family:"Courier New";
+		}
+		.detail input{
+			width:100%;
+		}
+		.detail {
+			position:relative;
+		}
+		#option {
+			float:left;
+		}
+		.edit {
+			float:right;
+		}
+		img.include.minus {
+			height:12px;
+			width:12px;
+			position:absolute;
+			right:2px;
+			padding-top:4px;
+		}
+		img.include.plus {
+			height:14px;
+			width:14px;
+		}
+		.title {
+			position:absolute;
+			right:20px;
+			padding-top:6px;
+			color:#999999;
+			font-size:10px;
 		}
 	</style>
 </head>
@@ -40,19 +126,23 @@
     <div id="info">
     	<div id="title">JavaScript Injector: Nicholas Workshop</div>
       <div id="description">You can inject javascript to the page</div>
+      <!--<div id="divider"></div>-->
     </div>
-    <div id="control">
-    	<div id="select">
-        <a id="all" href="#">Select All</a> 
-        <a id="none" href="#">Select None</a>
+    
+    <div id="board">
+      <div id="script"></div>
+      <div id="control">
+        <div id="select">
+          <a id="all" href="#">Select All</a> 
+          <a id="none" href="#">Select None</a>
+        </div>
+        <div id="action">
+          <button id="remove">Delete Selected Scripts</button>
+          <button id="refresh">Reload Script Table</button>
+        </div>
       </div>
-      <div id="action">
-        <button id="remove">Delete Selected Scripts</button>
-        <button id="refresh">Refresh Script Table</button>
-      </div>
-    </div>
-    <div id="script"></div>
-    <div id="copyright">PS. jQuery is already injected. Developed by Nicholas Wong</div>
+      <div id="copyright">© Nicholas Workshop</div>
+  	</div>
   </div>
 </body>
 	
@@ -69,48 +159,87 @@
 		}
 	}
 	
-	//__ONLOAD__//
-	debug.log("Debug Mode");
-	refresh();
-	
-	//__DISPLAY__//
-	function refresh() {
-		var code = "<table>";
-		code += "<tr><th></th><th>SCRIPTS</th></tr>";
-		//for (var i=0; i<background.storage.length(); i++) {
-		for (id in background.storage.data) {
-			code += "<tr>";
-				code += "<td>";
-					code += "<input type='checkbox' alt='"+id+"' />";
-				code += "</td>";
-				code += "<td>";
-					code += "<div>URL: "+background.storage.get(id).url+"</div>";
-					code += "<textarea>"+background.storage.get(id).script+"</textarea>";
-				code += "</td>";
-			code += "</tr>";
+	//__LOADER__//
+	var load = {
+		refresh: function() {
+			location.reload(true);
+		},
+		table: function() {
+			var code = "<table>";
+			code += "<tr><th style='width:17px;'></th><th>SCRIPTS</th></tr>";
+			//for (var i=0; i<background.storage.length(); i++) {
+			for (id in background.storage.data) {
+				code += "<tr class='row"+id+"'>";
+					code += "<td>";
+						code += "<input type='checkbox' class='select' alt='"+id+"' />";
+					code += "</td>";
+					code += "<td>";
+						code += "<div class='detail'>";
+							code += "<span class='title'>Url</span><input type='text' class='url' value='"+background.storage.get(id).url+"'/>";
+							$(background.storage.get(id).include).each(function() {
+								code += '<div class="include"><span class="title">Include</span><input type="text" class="include" value="'+this+'"/><img class="include minus" src="img/minus.png"/></div>';
+							});
+							code += "<textarea class='script'>"+background.storage.get(id).script+"</textarea>";
+						code += '</div>';
+						code += '<div class="option">';
+							code += '<input type="checkbox" class="save" '+background.storage.get(id).save+'/>Save';
+							code += '<input type="checkbox" class="autorun" '+background.storage.get(id).autorun+'/>Autorun';
+							code += '<input type="checkbox" class="jquery" '+background.storage.get(id).jquery+'/>jQuery';
+						code += '</div>';
+						code += '<div class="edit">';
+							code += '<button class="update" alt='+id+'>Update</button>';
+						code += '</div>';
+					code += "</td>";
+				code += "</tr>";
+			}
+			code += "</table>";
+			$("#script").html(code);
+			$("img.include.minus").click(function() {
+				$(this).parent().remove();
+			});
+			$(".edit .update").click(function() {
+				var id = $(this).attr("alt");
+				var include = [];
+				$(".row"+id+" .detail input.include").each(function() {
+					include.push($(this).val());
+				});
+				var detail = {
+					id      : $(this).attr("alt"),
+					url     : $(".row"+id+" .detail .url").val(),
+					script  : $(".row"+id+" .detail .script").val(),
+					save    : $(".row"+id+" .option .save").attr('checked'),
+					autorun : $(".row"+id+" .option .autorun").attr('checked'),
+					jquery  : $(".row"+id+" .option .jquery").attr('checked'),
+					include : include
+				};
+				background.storage.update(detail);
+				load.refresh();
+			});
 		}
-		code += "</table>";
-		$("#script").html(code);
 	}
 
 	//__LISTENER__//
 	$("#select #all").click( function() { 
-		$("input:checkbox").attr('checked', true); 
+		$("input.select:checkbox").attr('checked', true); 
 	});
 	$("#select #none").click(function() { 
-		$("input:checkbox").attr('checked', false); 
+		$("input.select:checkbox").attr('checked', false); 
 	});
 	$("#action #remove").click(function() {
 		if( confirm ("Are you sure to remove the selected script(s)?") ) {
-			$("input:checked").each(function(){
+			$("input.select:checked").each(function(){
 				background.storage.remove( $(this).attr("alt") );
 			});
-			refresh();
+			load.refresh();
 		}
 	});
 	$("#action #refresh").click(function() {
-		refresh();
+		load.refresh();
 	});
+	
+	//__ONLOAD__//
+	debug.log("Debug Mode");
+	load.table();
 	
 </script>
 </html>

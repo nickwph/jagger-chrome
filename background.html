@@ -27,6 +27,9 @@ function inject(tab, detail) {
 
 //__STORAGE__//
 var storage = {
+	update: function(detail){
+		localStorage[detail.id] = JSON.stringify(detail);
+	},
 	save: function(detail) {
 		var id = this.contain(detail.url); //check existance
 		if (id == -1) id = localStorage.length; //override the old save
