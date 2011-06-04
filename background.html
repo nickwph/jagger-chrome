@@ -38,7 +38,7 @@ var storage = {
 		else storage.update(storage.current.splice(id,1,detail));
 	},
 	get: function(id) {
-		console.log(storage.current);
+		//console.log(storage.current);
 		return storage.current[id];
 	},
 	remove: function(id) {
@@ -154,6 +154,5 @@ chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
 //__ONLOAD__//
 debug.log("Debug Mode");
 extension.check();
-console.log(storage.current.length);
 
 </script>
