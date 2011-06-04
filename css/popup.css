@@ -2,7 +2,8 @@
 body {
 	width:500px; 
 	height:300px;
-	font-family:Optimer;
+	/*font-family:Optimer;*/
+	font-family:Arial, Helvetica, Sans-serif;
 	font-size:14px;
 }
 button {
@@ -18,7 +19,7 @@ button {
 	white-space: nowrap;
 	cursor: default;
 	outline: none;
-	font: 75% arial,sans-serif;
+	font: 75% Arial, Helvetica, Sans-serif;
 	color: black;
 	border: 1px solid #BBB;
 	border-radius: 3px;

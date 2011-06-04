@@ -1,12 +1,14 @@
 <html>
 
 <head>
-	<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-  <script type="text/javascript" src="js/typeface-0.15.js"></script>
-  <script type="text/javascript" src="js/optimer_bold_italic.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_bold.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_italic.typeface.js"></script>
-  <script type="text/javascript" src="js/optimer_regular.typeface.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
+  <!--
+  <script type="text/javascript" src="js/fonts/typeface-0.15.js"></script>
+  <script type="text/javascript" src="js/fonts/optimer_bold_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/fonts/optimer_bold.typeface.js"></script>
+  <script type="text/javascript" src="js/fonts/optimer_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/fonts/optimer_regular.typeface.js"></script>
+  -->
 	<link type="text/css" rel="stylesheet" href="css/popup.css"/> 
 </head>
 
@@ -36,6 +38,7 @@
   	<button id="submit">Inject Now!</button>
   </div>
   <div id="copyright">© Nicholas Workshop</div>
+  
 </body>
 	
 <script type="text/javascript">
@@ -88,7 +91,7 @@
 		},
 		jquery: function() {
 			if (storage.packet) $("#option #jquery").attr('checked', storage.packet.jquery);
-			else $("#option #jquery").attr('checked', false);
+			else $("#option #jquery").attr('checked', true);
 		},
 		include: function() {
 			if (storage.packet) {

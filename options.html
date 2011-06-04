@@ -2,133 +2,18 @@
 	
 <head>
 	<title>Javascript</title>
-  <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-  
-	<style>
-		body {
-			font-family:Arial, Helvetica, sans-serif;
-			font-size:12px;
-		}
-		#info #title {
-			font-size:20px;
-		}
-		#info #divider {
-			background:repeat-x center url('img/divider.png')  ;
-			padding-top:5px;
-			height:1px;
-		}
-		#info {
-			margin-bottom:15px;
-		}
-		textarea {
-			width:100%;
-			overflow:visible;
-		}
-		#script table {
-			border:1px solid #D0DAFD;
-			width:100%;
-			
-			font-family:Arial, Helvetica, sans-serif;
-			font-size:12px;
-		}
-		#script table tr td{
-			background-color:#E8F2FE;
-			padding-top:10px;
-			padding-bottom:10px;
-		}
-		#script table tr td:hover{
-			background-color:#D0DAFD;
-		}
-		#container {
-			margin:auto;
-			width:800px;
-		}
-		#control #select{
-			float:left;
-		}
-		#control #action {
-			float:right;
-		}
-		#control {
-			margin-top:10px;
-		}
-		#copyright {
-			text-align:center;
-			margin-top:45px;
-		}
-		button {
-			-webkit-user-select: none;
-			margin-bottom: 2px;
-			position: relative;
-			display: inline-block;
-			background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F9F9F9),to(#E3E3E3));
-			margin: 0 8px 0 0;
-			padding: 3px 8px;
-			text-align: center;
-			vertical-align: middle;
-			white-space: nowrap;
-			cursor: default;
-			outline: none;
-			color: black;
-			border: 1px solid #BBB;
-			border-radius: 3px;
-			-webkit-border-radius: 3px;
-			-moz-border-radius: 3px;
-			border-top-color: #CCC;
-			border-bottom-color: #A0A0A0;
-		}
-		button:hover {
-			border-color: #939393!important;
-		}
-		button:active {
-			background: -webkit-gradient(linear,0% 40%,0% 70%,from(#E3E3E3),to(#F9F9F9));
-			border-color: #444!important;
-		}
-		.detail input, .detail textarea {
-			border:1px solid #999;
-			font-family:"Courier New";
-		}
-		.detail input{
-			width:100%;
-		}
-		.detail {
-			position:relative;
-		}
-		#option {
-			float:left;
-		}
-		.edit {
-			float:right;
-		}
-		img.include.minus {
-			height:12px;
-			width:12px;
-			position:absolute;
-			right:2px;
-			padding-top:4px;
-		}
-		img.include.plus {
-			height:14px;
-			width:14px;
-		}
-		.title {
-			position:absolute;
-			right:20px;
-			padding-top:6px;
-			color:#999999;
-			font-size:10px;
-		}
-	</style>
+	<link type="text/css" rel="stylesheet" href="css/options.css"/> 
+  <link type="text/css" rel="stylesheet" href="css/grid/960.css"/> 
 </head>
 
 <body>
-	<div id="container">
+	<div id="container" class="container_12">
     <div id="info">
+    	<button id="reset">Reset Database to Fix Errors</button>
     	<div id="title">JavaScript Injector: Nicholas Workshop</div>
       <div id="description">You can inject javascript to the page</div>
       <!--<div id="divider"></div>-->
     </div>
-    
     <div id="board">
       <div id="script"></div>
       <div id="control">
@@ -142,33 +27,72 @@
         </div>
       </div>
       <div id="copyright">© Nicholas Workshop</div>
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<table>
+<tr><td><input type="hidden" name="on0" value="Select">Select</td></tr>
+<tr><td>
+<select name="os0">
+	<option value="Option 1">Option 1 </option>
+	<option value="Option 2">Option 2 </option>
+	<option value="Option 3">Option 3 </option>
+</select>
+</td></tr>
+</table>
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="https://www.paypalobjects.com/en_GB/HK/i/btn/btn_buynowCC_LG_wCUP.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_xclick-subscriptions">
+<input type="hidden" name="business" value="nicholasworkshop@gmail.com">
+<input type="hidden" name="lc" value="US">
+<input type="hidden" name="item_name" value="Donate Nicholas Workshop, Thank You!">
+<input type="hidden" name="no_note" value="1">
+<input type="hidden" name="src" value="1">
+<input type="hidden" name="a3" value="9.99">
+<input type="hidden" name="p3" value="1">
+<input type="hidden" name="t3" value="M">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="bn" value="PP-SubscriptionsBF:btn_subscribeCC_LG.gif:NonHostedGuest">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
   	</div>
   </div>
 </body>
-	
+
+<script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
 <script>
 
-	//__SETTING__//
-	const background = chrome.extension.getBackgroundPage();
-	
-	//__DEBUG__//
-	var debug = {
-		mode: true,
-		log: function(string) { 
-			if (this.mode) background.console.log("O: " + string); 
-		}
+//__SETTING__//
+const background = chrome.extension.getBackgroundPage();
+
+//__DEBUG__//
+var debug = {
+	mode: true,
+	log: function(string) { 
+		if (this.mode) background.console.log("O: " + string); 
 	}
-	
-	//__LOADER__//
-	var load = {
-		refresh: function() {
-			location.reload(true);
-		},
-		table: function() {
-			var code = "<table>";
+}
+
+//__LOADER__//
+var load = {
+	refresh: function() {
+		location.reload(true);
+	},
+	table: function() {
+		var code = "";
+		if (background.storage.data.length>0) {
+			code +="<table>";
 			code += "<tr><th style='width:17px;'></th><th>SCRIPTS</th></tr>";
-			//for (var i=0; i<background.storage.length(); i++) {
-			for (id in background.storage.data) {
+			for (id in background.storage.current) {
 				code += "<tr class='row"+id+"'>";
 					code += "<td>";
 						code += "<input type='checkbox' class='select' alt='"+id+"' />";
@@ -193,53 +117,63 @@
 				code += "</tr>";
 			}
 			code += "</table>";
-			$("#script").html(code);
-			$("img.include.minus").click(function() {
-				$(this).parent().remove();
-			});
-			$(".edit .update").click(function() {
-				var id = $(this).attr("alt");
-				var include = [];
-				$(".row"+id+" .detail input.include").each(function() {
-					include.push($(this).val());
-				});
-				var detail = {
-					id      : $(this).attr("alt"),
-					url     : $(".row"+id+" .detail .url").val(),
-					script  : $(".row"+id+" .detail .script").val(),
-					save    : $(".row"+id+" .option .save").attr('checked'),
-					autorun : $(".row"+id+" .option .autorun").attr('checked'),
-					jquery  : $(".row"+id+" .option .jquery").attr('checked'),
-					include : include
-				};
-				background.storage.update(detail);
-				load.refresh();
-			});
 		}
-	}
-
-	//__LISTENER__//
-	$("#select #all").click( function() { 
-		$("input.select:checkbox").attr('checked', true); 
-	});
-	$("#select #none").click(function() { 
-		$("input.select:checkbox").attr('checked', false); 
-	});
-	$("#action #remove").click(function() {
-		if( confirm ("Are you sure to remove the selected script(s)?") ) {
-			$("input.select:checked").each(function(){
-				background.storage.remove( $(this).attr("alt") );
+		else {
+			code += "<table><tr><th>NO SCRIPTS SAVED</th></tr></table>";
+		}
+		$("#script").html(code);
+		$("img.include.minus").click(function() {
+			$(this).parent().remove();
+		});
+		$(".edit .update").click(function() {
+			var id = $(this).attr("alt");
+			var include = [];
+			$(".row"+id+" .detail input.include").each(function() {
+				include.push($(this).val());
 			});
+			var detail = {
+				id      : $(this).attr("alt"),
+				url     : $(".row"+id+" .detail .url").val(),
+				script  : $(".row"+id+" .detail .script").val(),
+				save    : $(".row"+id+" .option .save").attr('checked'),
+				autorun : $(".row"+id+" .option .autorun").attr('checked'),
+				jquery  : $(".row"+id+" .option .jquery").attr('checked'),
+				include : include
+			};
+			background.storage.update(detail);
 			load.refresh();
-		}
-	});
-	$("#action #refresh").click(function() {
+		});
+	}
+}
+
+//__LISTENER__//
+$("#select #all").click( function() { 
+	$("input.select:checkbox").attr('checked', true); 
+});
+$("#select #none").click(function() { 
+	$("input.select:checkbox").attr('checked', false); 
+});
+$("#action #remove").click(function() {
+	if( confirm ("Are you sure to remove the selected script(s)?") ) {
+		$("input.select:checked").each(function(){
+			background.storage.remove( $(this).attr("alt") );
+		});
 		load.refresh();
-	});
-	
-	//__ONLOAD__//
-	debug.log("Debug Mode");
-	load.table();
+	}
+});
+$("#info #reset").click(function() {
+	if( confirm ("This option is to fix any errors happened.\nAre you sure to reset the database?") ) {
+		background.storage.data.clear();
+		load.refresh();
+	}
+});
+$("#action #refresh").click(function() {
+	load.refresh();
+});
+
+//__ONLOAD__//
+debug.log("Debug Mode");
+load.table();
 	
 </script>
 </html>
