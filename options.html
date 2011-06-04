@@ -92,7 +92,7 @@ var load = {
 		if (background.storage.data.length>0) {
 			code +="<table>";
 			code += "<tr><th style='width:17px;'></th><th>SCRIPTS</th></tr>";
-			for (id in background.storage.current) {
+			for (id in background.storage.current) {debug.log(1);
 				code += "<tr class='row"+id+"'>";
 					code += "<td>";
 						code += "<input type='checkbox' class='select' alt='"+id+"' />";
@@ -140,7 +140,7 @@ var load = {
 				jquery  : $(".row"+id+" .option .jquery").attr('checked'),
 				include : include
 			};
-			background.storage.update(detail);
+			background.storage.save(detail);
 			load.refresh();
 		});
 	}

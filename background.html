@@ -27,25 +27,26 @@ function inject(tab, detail) {
 
 //__STORAGE__//
 var storage = {
-	update: function(detail){
-		localStorage[detail.id] = JSON.stringify(detail);
+	update: function(array){
+		localStorage[version] = JSON.stringify(array);
+		//localStorage[detail.id] = JSON.stringify(detail);
 	},
 	save: function(detail) {
-		var id = this.contain(detail.url); //check existance
-		if (id == -1) id = localStorage.length; //override the old save
-		detail.id = id;
-		localStorage[id] = JSON.stringify(detail);
-		return id;
+		var id = storage.contain(detail.url); //check existance
+		
+		if (id == -1) storage.update(storage.current.push(detail));
+		else storage.update(storage.current.splice(id,1,detail));
 	},
 	get: function(id) {
 		console.log(storage.current);
 		return storage.current[id];
 	},
 	remove: function(id) {
-		localStorage.removeItem(id);
+		storage.update(storage.current.splice(id,1));
+		//localStorage.removeItem(id);
 	},
 	length: function() {
-		return localStorage.length;
+		return storage.current.length;
 	},
 	contain: function(url) {
 		for (id in storage.current) {
@@ -115,10 +116,7 @@ var extension = {
 			
 			localStorage.version = "2.0.0";
 			
-			if (storage.data.version == version) { //check storage
-				debug.log("This version is " + version);
-			}
-			else {
+			if (storage.data.version != version) { //check storage
 				extension.convert();
 			}
 		//});
@@ -128,7 +126,7 @@ var extension = {
 		
 		
 		localStorage[0] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
-		localStorage[1] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
+		//localStorage[1] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
 		
 		localStorage.version = version;
 		var array = [];
@@ -163,6 +161,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
 //__ONLOAD__//
 debug.log("Debug Mode");
 extension.check();
-
+console.log(storage.current.length);
 
 </script>
