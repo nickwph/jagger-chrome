@@ -28,16 +28,19 @@
     <span>Script: </span>
     <textarea id="script"></textarea>
   </div>
-  <div id="option">
-    <input type="checkbox" id="save"/>Save
-    <input type="checkbox" id="autorun"/>Autorun
-    <input type="checkbox" id="jquery"/>jQuery
-  </div>
-  <div id="button">
-  	<button id="reload">Reload Script</button>
-  	<button id="submit">Inject Now!</button>
+  <div style="overflow:auto;">
+    <div id="option">
+      <input type="checkbox" id="save"/>Save
+      <input type="checkbox" id="autorun"/>Autorun
+      <input type="checkbox" id="jquery"/>jQuery
+    </div>
+    <div id="buttons">
+      <button id="reload">Reload Script</button>
+      <button id="submit">Inject Now!</button>
+    </div>
   </div>
   <div id="copyright">© Nicholas Workshop</div>
+  <div id="website"><a href="http://nicholasworkshop.co.cc">nicholasworkshop.co.cc</a></div>
   
 </body>
 	
@@ -118,7 +121,7 @@
 	}
 	
 	//__LISTENERS__//
-	$("#button #submit").click(function() {
+	$("#buttons #submit").click(function() {
 		var include = [];
 		$("#detail input.include").each(function() {
 			include.push($(this).val());
@@ -134,7 +137,7 @@
 		};
 		background.inject(storage.tab, detail);
 	});
-	$("#button #reload").click(function() {
+	$("#buttons #reload").click(function() {
 		location.reload(true);
 	});
 	$("img.include.plus").click(function() {

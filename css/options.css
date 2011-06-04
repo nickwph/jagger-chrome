@@ -3,6 +3,8 @@ body {
 	font-family:Arial, Helvetica, Sans-serif;
 	font-size:12px;
 }
+
+/*__INFO__*/
 #info #title {
 	font-size:20px;
 }
@@ -14,7 +16,15 @@ body {
 #info {
 	margin-bottom:15px;
 }
-textarea {
+#info #reset {
+	float:right;
+}
+
+/*__SCRIPT__*/
+#script {
+	margin-top:10px;
+}
+#script textarea {
 	width:100%;
 	overflow:visible;
 }
@@ -33,10 +43,8 @@ textarea {
 #script table tr td:hover{
 	background-color:#D0DAFD;
 }
-#container {
-	/*margin:auto;
-	width:800px;*/
-}
+
+/*__CONTROL__*/
 #control #select{
 	float:left;
 }
@@ -44,12 +52,23 @@ textarea {
 	float:right;
 }
 #control {
-	margin-top:10px;
+	margin-top:5px;
+	overflow:auto;
+	margin-bottom:10px;
 }
+
+/*__COPYRIGHT__*/
 #copyright {
 	text-align:center;
-	margin-top:45px;
+	margin-top:10px;
 }
+
+/*__WEBSITE__*/
+#website {
+	text-align:center;
+}
+
+/*__BUTTON__*/
 button {
 	-webkit-user-select: none;
 	margin-bottom: 2px;
@@ -78,6 +97,8 @@ button:active {
 	background: -webkit-gradient(linear,0% 40%,0% 70%,from(#E3E3E3),to(#F9F9F9));
 	border-color: #444!important;
 }
+
+/*__DETAIL__*/
 .detail input, .detail textarea {
 	border:1px solid #999;
 	font-family:"Courier New";
@@ -88,12 +109,18 @@ button:active {
 .detail {
 	position:relative;
 }
-#option {
+
+/*__OPTION__*/
+.option {
 	float:left;
 }
+
+/*__EDIT__*/
 .edit {
 	float:right;
 }
+
+/*__EFFECTS__*/
 img.include.minus {
 	height:12px;
 	width:12px;
@@ -112,6 +139,14 @@ img.include.plus {
 	color:#999999;
 	font-size:10px;
 }
-#info #reset {
-	float:right;
+
+/*__DONATE__*/
+.donate {
+	background:url('../img/donate_10.jpg') center no-repeat;
+	height:100px;
+	cursor:pointer;
+	text-align:center;
+}
+.donate input {
+	padding-top:50px;
 }

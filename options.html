@@ -8,13 +8,24 @@
 
 <body>
 	<div id="container" class="container_12">
+  	
     <div id="info">
     	<button id="reset">Reset Database to Fix Errors</button>
     	<div id="title">JavaScript Injector: Nicholas Workshop</div>
       <div id="description">You can inject javascript to the page</div>
       <!--<div id="divider"></div>-->
     </div>
-    <div id="board">
+    
+  	<div class="donate shadow">
+      <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+        ">
+        <input type="image" src="img/donate_btn.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+      </form>
+    </div>
+    
       <div id="script"></div>
       <div id="control">
         <div id="select">
@@ -26,45 +37,20 @@
           <button id="refresh">Reload Script Table</button>
         </div>
       </div>
+      
+			<div class="donate shadow">
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+          ">
+          <input type="image" src="img/donate_btn.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+        </form>
+      </div>
+
       <div id="copyright">© Nicholas Workshop</div>
-
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<table>
-<tr><td><input type="hidden" name="on0" value="Select">Select</td></tr>
-<tr><td>
-<select name="os0">
-	<option value="Option 1">Option 1 </option>
-	<option value="Option 2">Option 2 </option>
-	<option value="Option 3">Option 3 </option>
-</select>
-</td></tr>
-</table>
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-">
-<input type="image" src="https://www.paypalobjects.com/en_GB/HK/i/btn/btn_buynowCC_LG_wCUP.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
-</form>
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_xclick-subscriptions">
-<input type="hidden" name="business" value="nicholasworkshop@gmail.com">
-<input type="hidden" name="lc" value="US">
-<input type="hidden" name="item_name" value="Donate Nicholas Workshop, Thank You!">
-<input type="hidden" name="no_note" value="1">
-<input type="hidden" name="src" value="1">
-<input type="hidden" name="a3" value="9.99">
-<input type="hidden" name="p3" value="1">
-<input type="hidden" name="t3" value="M">
-<input type="hidden" name="currency_code" value="USD">
-<input type="hidden" name="bn" value="PP-SubscriptionsBF:btn_subscribeCC_LG.gif:NonHostedGuest">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-
-
-  	</div>
+      <div id="website"><a href="http://nicholasworkshop.co.cc">nicholasworkshop.co.cc</a></div>
+      
   </div>
 </body>
 

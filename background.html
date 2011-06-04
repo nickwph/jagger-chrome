@@ -112,23 +112,16 @@ var javascript = {
 var extension = {
 	id: location.host,
 	check: function() {
-		//chrome.management.get(extension.id, function(info) {
-			
-			localStorage.version = "2.0.0";
-			
-			if (storage.data.version != version) { //check storage
-				extension.convert();
-			}
-		//});
+		//localStorage.version = "2.0.0";
+		if (storage.data.version != version) { //check storage
+			extension.convert();
+		}
 	},
 	convert: function() {
 		
-		
-		
-		localStorage[0] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
+		//localStorage[0] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
 		//localStorage[1] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
 		
-		localStorage.version = version;
 		var array = [];
 		for (i in storage.data) {
 			try {
