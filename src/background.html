@@ -1,0 +1,187 @@
+<script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
+
+<script>
+
+//__DEBUG__//
+var debug = {
+	//__DEBUG_MODE__//
+	mode: true,
+	//__LOGGING__//
+	log: function(string) { 
+		if (this.mode) console.log("B: "+string); 
+	}
+};
+
+var property = {
+	//__DATA_VERSION__//
+	version: "2.0.4"
+};
+
+
+//__STORAGE__//
+var storage = {
+	//__SAVE_DATA__//
+	save: function(detail) {
+		
+		var id = storage.contain(detail.url); //check existance
+		if (id == -1) {
+			var current = storage.current();
+			console.log(JSON.parse(localStorage[property.version]).push(detail));
+			localStorage[property.version] = JSON.stringify(JSON.parse(localStorage[property.version]).push(detail));
+			
+		}
+		else {
+			localStorage[property.version] = JSON.stringify(storage.current().splice(id,1,detail));
+		}
+	},
+	//__GET_RECORD__//
+	get: function(id) {
+		return storage.current()[id];
+	},
+	//__REMOVE_RECORD__//
+	remove: function(id) {
+		localStorage[property.version] = JSON.stringify(storage.current().splice(id,1));
+	},
+	//__NUMBER_OF_RECORDS__//
+	length: function() {
+		return storage.current().length;
+	},
+	//__CHECK_EXISTANCE__//
+	contain: function(url) {
+		for (id in storage.current()) {
+			if (url.match(storage.get(id).url)) {
+				return id;
+			}
+		}
+		return -1;
+	},
+	//__JSON_FOR_THE_CURRENT_VERSION__//
+	current: function() {
+			if (localStorage[property.version][0] != "[") return [];
+			return JSON.parse(localStorage[property.version]);
+		
+	},
+	reset: function() {
+		localStorage.clear();
+		localStorage[property.version] = "[]";
+	},
+	check: function() {
+		/*if (JSON.parse(storage.current).constructor.toString().indexOf("Array") == -1) {
+			debug.log("Database Crush! Reseting Database");
+			localStorage[property.version] = "[]";
+		}*/
+	},
+	tab: null
+};
+storage.check();
+
+//__FUNCTIONS__//
+var javascript = {
+	//__EXECUTE_JS__//
+	execute: {
+		//__SCRIPT_MODE__//
+		script: function(script, callback) {
+			chrome.tabs.executeScript(storage.tab.id, {code:script}, function() {
+				debug.log("Script executed: "+script.substr(0,20).replace("\n"," "));
+				callback();
+				return;
+			});
+		},
+		//__EXECUTE_FROM_FILE__//
+		file: function(file, callback) {
+			chrome.tabs.executeScript(storage.tab.id, {file:file}, function() {
+				debug.log("File executed: "+file.substr(0,20).replace("\n"," "));
+				callback();
+				return;
+			});
+		}
+	},
+	//__LOAD_INCLUDED_FILES__//
+	include: function(include, callback) {
+		if (include.length==1 && include[0]=="") { //no include
+			 callback();
+			 return;
+		}
+		var done = include.length;
+		for (var i=0; i<include.length; i++) {
+			$.get(include[i], function(data) {
+				javascript.execute.script(data, function() {
+					if ((--done)==0) callback();
+					return;
+				});
+			});
+		}
+		
+	},
+	//__RUN_PRESET_SCRIPTS__//
+	run: function(packet, callback) { //jquery->includes->scripts
+		javascript.jquery(packet.jquery, function() {
+			javascript.include(packet.include, function() {
+				javascript.execute.script(packet.script, callback);
+				return;
+			});
+		});
+	},
+	//__LOAD_JQUERY__//
+	jquery: function(add, callback) { //first arg: add or not
+		if (add) javascript.execute.file("js/jquery/jquery-1.6.1.min.js", callback);
+		else callback();
+	},
+	inject: function(tab, detail) {
+		if (detail.save) storage.save(detail);
+		storage.tab = tab;
+		javascript.run(detail, function() {
+			debug.log("Injected.");
+		});
+	}
+};
+
+/*var extension = {
+	id: location.host,
+	check: function() {
+		try { //check storage
+			var temp = storage.data.version;
+		}
+		catch(e) {
+			extension.convert();
+		}
+	},
+	convert: function() {
+		
+		//localStorage[0] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
+		//localStorage[1] = JSON.stringify({"id":"0","url":"/www.facebook.com/","script":"$(\"#pageLogo\").html(\"<div style='color:white;font-size:18px;padding-top:6px;'>nickbook</div>\").click(function() {location.href='http://www.facebook.com'});;","save":"checked","autorun":"checked","jquery":"checked","include":[""]});
+		
+		var array = [];
+		for (i in storage.data) {
+			try {
+				if (JSON.parse(localStorage[i]).id) {
+					array.push(JSON.parse(storage.data[i]));
+				}
+			}catch(e){}
+		}
+		localStorage.clear();
+		localStorage.version = version;
+		localStorage[version] = JSON.stringify(array);
+		//console.log(storage.current);
+		debug.log("Update Done!");
+	}
+};*/
+
+//__LISTENERS__//
+chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+	if (info.status == "complete") { //run when the page finished loading, otherwise it fires twice
+		var id = storage.contain(tab.url);
+		if (id != -1 && storage.get(id).autorun) { //check existance and autorun
+			storage.tab = tab;
+			javascript.run(storage.get(id), function() { //run functions
+				debug.log("Existing script executed.");
+			});
+		}
+	}
+});
+
+//__ONLOAD__//
+debug.log("Debug Mode");
+//extension.check();
+
+</script>

@@ -1,0 +1,163 @@
+<html>
+
+<head>
+	<script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/popup.css"/> 
+</head>
+
+<body class="typeface-js">
+	
+	<div id="info">
+    <div id="title"><strong>JavaScript Injector</div></strong>
+    <div id="description">You can inject javascript to the page</div>
+    <div id="divider"></div>
+  </div>
+  <div id="detail"> 
+    <span>Url: (Regular Expression Enabled)</span>
+    <input type="text" id="url"/>
+    <span>Includes Javascript: </span>
+    <img class="include plus" src="img/plus.png"/>
+    <div class="include"><input type="text" class="include"/></div>
+    <span>Script: </span>
+    <textarea id="script"></textarea>
+  </div>
+  <div style="overflow:auto;">
+    <div id="option">
+      <input type="checkbox" id="save"/>Save
+      <input type="checkbox" id="autorun"/>Autorun
+      <input type="checkbox" id="jquery"/>jQuery
+    </div>
+    <div id="buttons">
+      <button id="reload">Reload</button>
+      <button id="saveonly">Save Only</button>
+      <button id="submit">Inject</button>
+    </div>
+  </div>
+  <div id="copyright">© Nicholas Workshop</div>
+  <div id="website"><a href="http://nicholasworkshop.co.cc">nicholasworkshop.co.cc</a></div>
+  
+</body>
+	
+<script type="text/javascript">
+
+	//__SETTING__//
+	const background = chrome.extension.getBackgroundPage();
+	
+	//__DEBUG__//
+	var debug = {
+		//__DEBUG_MODE__//
+		mode: true,
+		//__LOGGING__//
+		log: function(string) { 
+			if (this.mode) background.console.log("P: "+string); 
+		}
+	};
+
+	//__STORAGE__//
+	var storage = {
+		//__CURRENT_TAB__//
+		tab: null,
+		//__LOADED_PACKET__//
+		packet: null
+	};
+
+	//__FUNCTIONS__//
+	var load = {
+		//__RETRIEVE_DATA_FROM_DATABASE__//
+		init: function(callback) {
+			chrome.windows.getCurrent(function(window) {
+				chrome.tabs.getSelected(window.id, function(tab){
+					storage.tab = tab;
+					var id = background.storage.contain(storage.tab.url);
+					if (id != -1) {
+						storage.packet = background.storage.get(id);
+					}
+					callback();
+				});
+			});
+		},
+		//__DISPLAY_SCRIPT__//
+		script: function() {
+			if (storage.packet) $("#detail #script").html(storage.packet.script);
+		},
+		//__DISPLAY_URL__//
+		url: function() {
+			if (storage.packet) $("#detail #url").val(storage.packet.url);
+			else $("#detail #url").val(storage.tab.url);
+		},
+		//__DISPLAY_SAVE_CHECKBOX__//
+		save: function() {
+			if (storage.packet) $("#option #save").attr('checked', storage.packet.save);
+			else $("#option #save").attr('checked', true);
+		},
+		//__DISPLAY_AUTORUN_CHECKBOX__//
+		autorun: function() {
+			if (storage.packet) $("#option #autorun").attr('checked', storage.packet.autorun);
+			else $("#option #autorun").attr('checked', true);
+		},
+		//__DISPLAY_JQUERY_CHECKBOX__//
+		jquery: function() {
+			if (storage.packet) $("#option #jquery").attr('checked', storage.packet.jquery);
+			else $("#option #jquery").attr('checked', true);
+		},
+		//__DISPLAY_INCLUDED_URL__//
+		include: function() {
+			if (storage.packet) {
+				$(storage.packet.include).each(function() {
+					$('<div class="include"><input type="text" class="include" value="'+this+'"/><img class="include minus" src="img/minus.png"/></div>')
+						.insertAfter("#detail div.include:last");
+					$("img.include.minus").click(function() {
+						$(this).parent().remove();
+					});
+					$("#detail input.include:first").remove();
+        });
+			}
+		},
+		//__INITIALIZE_AND_DISPLAY__//
+		all: function() {
+			load.init(function() {
+				load.script();
+				load.url();
+				load.include();
+				load.save();
+				load.autorun();
+				load.jquery();
+			});
+		}
+	}
+	
+	//__LISTENERS__//
+	$("#buttons #submit").click(function() {
+		var include = [];
+		$("#detail input.include").each(function() {
+			include.push($(this).val());
+    });
+		var detail = {
+			id      : null,
+			url     : $("#detail #url").val(),
+			script  : $("#detail #script").val(),
+			save    : $("#option #save").attr('checked'),
+			autorun : $("#option #autorun").attr('checked'),
+			jquery  : $("#option #jquery").attr('checked'),
+			include : include
+		};
+		background.javascript.inject(storage.tab, detail);
+	});
+	$("#buttons #reload").click(function() {
+		location.reload(true);
+	});
+	$("img.include.plus").click(function() {
+		$('<div class="include"><input type="text" class="include"/><img class="include minus" src="img/minus.png"/></div>')
+			.insertAfter("#detail div.include:last");
+		$("img.include.minus").click(function() {
+			$(this).parent().remove();
+		});
+	});
+	
+	//__ONLOAD__//
+	debug.log("Debug Mode");
+	$("#detail #script").focus();
+	load.all();
+	
+</script>
+
