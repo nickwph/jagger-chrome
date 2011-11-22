@@ -1,29 +1,23 @@
 <script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="js/injector.js"></script>
+<script type="text/javascript" src="js/storage.js"></script>
 
 <script>
 
-//__DEBUG__//
+
 var debug = {
-	//__DEBUG_MODE__//
+	
 	mode: true,
-	//__LOGGING__//
+	
 	log: function(string) { 
 		if (this.mode) console.log("B: "+string); 
 	}
 };
 
-var property = {
-	//__DATA_VERSION__//
-	version: "2.0.4"
-};
-
-
-//__STORAGE__//
 var storage = {
-	//__SAVE_DATA__//
+	
 	save: function(detail) {
-		
-		var id = storage.contain(detail.url); //check existance
+		var id = storage.contain(detail.url);
 		if (id == -1) {
 			var current = storage.current();
 			console.log(JSON.parse(localStorage[property.version]).push(detail));
@@ -76,65 +70,7 @@ var storage = {
 storage.check();
 
 //__FUNCTIONS__//
-var javascript = {
-	//__EXECUTE_JS__//
-	execute: {
-		//__SCRIPT_MODE__//
-		script: function(script, callback) {
-			chrome.tabs.executeScript(storage.tab.id, {code:script}, function() {
-				debug.log("Script executed: "+script.substr(0,20).replace("\n"," "));
-				callback();
-				return;
-			});
-		},
-		//__EXECUTE_FROM_FILE__//
-		file: function(file, callback) {
-			chrome.tabs.executeScript(storage.tab.id, {file:file}, function() {
-				debug.log("File executed: "+file.substr(0,20).replace("\n"," "));
-				callback();
-				return;
-			});
-		}
-	},
-	//__LOAD_INCLUDED_FILES__//
-	include: function(include, callback) {
-		if (include.length==1 && include[0]=="") { //no include
-			 callback();
-			 return;
-		}
-		var done = include.length;
-		for (var i=0; i<include.length; i++) {
-			$.get(include[i], function(data) {
-				javascript.execute.script(data, function() {
-					if ((--done)==0) callback();
-					return;
-				});
-			});
-		}
-		
-	},
-	//__RUN_PRESET_SCRIPTS__//
-	run: function(packet, callback) { //jquery->includes->scripts
-		javascript.jquery(packet.jquery, function() {
-			javascript.include(packet.include, function() {
-				javascript.execute.script(packet.script, callback);
-				return;
-			});
-		});
-	},
-	//__LOAD_JQUERY__//
-	jquery: function(add, callback) { //first arg: add or not
-		if (add) javascript.execute.file("js/jquery/jquery-1.6.1.min.js", callback);
-		else callback();
-	},
-	inject: function(tab, detail) {
-		if (detail.save) storage.save(detail);
-		storage.tab = tab;
-		javascript.run(detail, function() {
-			debug.log("Injected.");
-		});
-	}
-};
+
 
 /*var extension = {
 	id: location.host,
@@ -169,9 +105,11 @@ var javascript = {
 
 //__LISTENERS__//
 chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
-	if (info.status == "complete") { //run when the page finished loading, otherwise it fires twice
+	//run when the page finished loading, otherwise it fires twice
+	if (info.status == "complete") { 
 		var id = storage.contain(tab.url);
-		if (id != -1 && storage.get(id).autorun) { //check existance and autorun
+		//check existance and autorun
+		if (id != -1 && storage.get(id).autorun) { 
 			storage.tab = tab;
 			javascript.run(storage.get(id), function() { //run functions
 				debug.log("Existing script executed.");
