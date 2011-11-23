@@ -1,7 +1,12 @@
 <html>
 
 <head>
-	<script type="text/javascript" src="js/jquery/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+  <script type="text/javascript" src="js/typeface-0.15.js"></script>
+  <script type="text/javascript" src="js/optimer_bold_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_bold.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_italic.typeface.js"></script>
+  <script type="text/javascript" src="js/optimer_regular.typeface.js"></script>
 	<link type="text/css" rel="stylesheet" href="css/popup.css"/> 
 </head>
 
@@ -21,21 +26,16 @@
     <span>Script: </span>
     <textarea id="script"></textarea>
   </div>
-  <div style="overflow:auto;">
-    <div id="option">
-      <input type="checkbox" id="save"/>Save
-      <input type="checkbox" id="autorun"/>Autorun
-      <input type="checkbox" id="jquery"/>jQuery
-    </div>
-    <div id="buttons">
-      <button id="reload">Reload</button>
-      <button id="saveonly">Save Only</button>
-      <button id="submit">Inject</button>
-    </div>
+  <div id="option">
+    <input type="checkbox" id="save"/>Save
+    <input type="checkbox" id="autorun"/>Autorun
+    <input type="checkbox" id="jquery"/>jQuery
+  </div>
+  <div id="button">
+  	<button id="reload">Reload Script</button>
+  	<button id="submit">Inject Now!</button>
   </div>
   <div id="copyright">© Nicholas Workshop</div>
-  <div id="website"><a href="http://nicholasworkshop.co.cc">nicholasworkshop.co.cc</a></div>
-  
 </body>
 	
 <script type="text/javascript">
@@ -45,25 +45,20 @@
 	
 	//__DEBUG__//
 	var debug = {
-		//__DEBUG_MODE__//
 		mode: true,
-		//__LOGGING__//
 		log: function(string) { 
 			if (this.mode) background.console.log("P: "+string); 
 		}
-	};
+	}
 
 	//__STORAGE__//
 	var storage = {
-		//__CURRENT_TAB__//
 		tab: null,
-		//__LOADED_PACKET__//
 		packet: null
-	};
+	}
 
 	//__FUNCTIONS__//
 	var load = {
-		//__RETRIEVE_DATA_FROM_DATABASE__//
 		init: function(callback) {
 			chrome.windows.getCurrent(function(window) {
 				chrome.tabs.getSelected(window.id, function(tab){
@@ -76,31 +71,25 @@
 				});
 			});
 		},
-		//__DISPLAY_SCRIPT__//
 		script: function() {
 			if (storage.packet) $("#detail #script").html(storage.packet.script);
 		},
-		//__DISPLAY_URL__//
 		url: function() {
 			if (storage.packet) $("#detail #url").val(storage.packet.url);
 			else $("#detail #url").val(storage.tab.url);
 		},
-		//__DISPLAY_SAVE_CHECKBOX__//
 		save: function() {
 			if (storage.packet) $("#option #save").attr('checked', storage.packet.save);
 			else $("#option #save").attr('checked', true);
 		},
-		//__DISPLAY_AUTORUN_CHECKBOX__//
 		autorun: function() {
 			if (storage.packet) $("#option #autorun").attr('checked', storage.packet.autorun);
 			else $("#option #autorun").attr('checked', true);
 		},
-		//__DISPLAY_JQUERY_CHECKBOX__//
 		jquery: function() {
 			if (storage.packet) $("#option #jquery").attr('checked', storage.packet.jquery);
-			else $("#option #jquery").attr('checked', true);
+			else $("#option #jquery").attr('checked', false);
 		},
-		//__DISPLAY_INCLUDED_URL__//
 		include: function() {
 			if (storage.packet) {
 				$(storage.packet.include).each(function() {
@@ -113,7 +102,6 @@
         });
 			}
 		},
-		//__INITIALIZE_AND_DISPLAY__//
 		all: function() {
 			load.init(function() {
 				load.script();
@@ -127,7 +115,7 @@
 	}
 	
 	//__LISTENERS__//
-	$("#buttons #submit").click(function() {
+	$("#button #submit").click(function() {
 		var include = [];
 		$("#detail input.include").each(function() {
 			include.push($(this).val());
@@ -141,9 +129,9 @@
 			jquery  : $("#option #jquery").attr('checked'),
 			include : include
 		};
-		background.javascript.inject(storage.tab, detail);
+		background.inject(storage.tab, detail);
 	});
-	$("#buttons #reload").click(function() {
+	$("#button #reload").click(function() {
 		location.reload(true);
 	});
 	$("img.include.plus").click(function() {
