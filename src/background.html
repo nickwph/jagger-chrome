@@ -5,10 +5,13 @@
     database.open();
     database.dropTable();
     database.createTable();
-    database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
-
-    chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
     
+    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
+    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
+    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
+    //database.getLastInsertId(function(id) { console.log(id) });
+    
+    chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {
             database.getMatchedScript(tab.url, function(data) {
@@ -20,6 +23,5 @@
             }); 
         }
     });
-
         	
 </script>
