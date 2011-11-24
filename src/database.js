@@ -15,7 +15,8 @@ database.createTable = function() {
                       "id INTEGER PRIMARY KEY ASC, "+
                       "url TEXT, " + 
                       "script TEXT, " + 
-                      "autorun BOOLEAN)", 
+                      "autorun BOOLEAN, " + 
+                      "jquery BOOLEAN)", 
                       []);
     });
 }
@@ -26,10 +27,10 @@ database.dropTable = function() {
     });
 }
 
-database.addScript = function(url, script, autorun) {
+database.addScript = function(url, script, autorun, jquery) {
     database.db.transaction(function(tx){
-        tx.executeSql("INSERT INTO Scripts (url, script, autorun) VALUES (?,?,?)",
-                      [url, script, autorun],
+        tx.executeSql("INSERT INTO Scripts (url, script, autorun, jquery) VALUES (?,?,?,?)",
+                      [url, script, autorun, jquery],
                       database.onSuccess,
                       database.onError);
     });
