@@ -1,122 +1,21 @@
-<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-
+<script type="text/javascript" src="database.js"></script>
+<script type="text/javascript" src="injector.js"></script>
 <script>
+    
+    database.open();
+    database.dropTable();
+    database.createTable();
+    database.addScript("/en.wikipedia.org/", "alert('aaa');", true);
 
-//__DEBUG__//
-var debug = {
-	mode: true,
-	log: function(string) { 
-		if (this.mode) console.log("B: "+string); 
-	},
-	storage: function() {
-		console.log(localStorage);
-	}
-}
+    chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+    
+        //run when the page finished loading, otherwise it fires twice
+        if (info.status == "complete") {
+            database.getMatchedScript(tab.url, function(data) {
+                injector.injectScript(tabId, data.script);
+            }); 
+        }
+    });
 
-//__ONLOAD__//
-debug.log("Debug Mode");
-
-//__INJECT__//
-function inject(tab, detail) {
-	if (detail.save) storage.save(detail);
-	storage.tab = tab;
-	javascript.run(detail, function() {
-		debug.log("Injected.");
-	});
-}
-
-//__STORAGE__//
-var storage = {
-	update: function(detail){
-		localStorage[detail.id] = JSON.stringify(detail);
-	},
-	save: function(detail) {
-		var id = this.contain(detail.url); //check existance
-		if (id == -1) id = localStorage.length; //override the old save
-		detail.id = id;
-		localStorage[id] = JSON.stringify(detail);
-		return id;
-	},
-	get: function(id) {
-		return JSON.parse(localStorage[id]);
-	},
-	remove: function(id) {
-		localStorage.removeItem(id);
-	},
-	length: function() {
-		return localStorage.length;
-	},
-	contain: function(url) {
-		for (id in storage.data) {
-			if (url.match(storage.get(id).url)) {
-				return id;
-			}
-		}
-		return -1;
-	},
-	data: localStorage,
-	tab: null
-}
-
-//__FUNCTIONS__//
-var javascript = {
-	execute: {
-		script: function(script, callback) {
-			chrome.tabs.executeScript(storage.tab.id, {code:script}, function() {
-				debug.log("Script executed: "+script.substr(0,20).replace("\n"," "));
-				callback();
-				return;
-			});
-		},
-		file: function(file, callback) {
-			chrome.tabs.executeScript(storage.tab.id, {file:file}, function() {
-				debug.log("File executed: "+file.substr(0,20).replace("\n"," "));
-				callback();
-				return;
-			});
-		}
-	},
-	include: function(include, callback) {
-		if (include.length==1 && include[0]=="") { //no include
-			 callback();
-			 return;
-		}
-		var done = include.length;
-		for (var i=0; i<include.length; i++) {
-			$.get(include[i], function(data) {
-				javascript.execute.script(data, function() {
-					if ((--done)==0) callback();
-					return;
-				});
-			});
-		}
-		
-	},
-	run: function(packet, callback) { //jquery->includes->scripts
-		javascript.jquery(packet.jquery, function() {
-			javascript.include(packet.include, function() {
-				javascript.execute.script(packet.script, callback);
-				return;
-			});
-		});
-	},
-	jquery: function(add, callback) { //first arg: add or not
-		if (add) javascript.execute.file("js/jquery-1.6.1.min.js", callback);
-		else callback();
-	}
-}
-
-//__LISTENERS__//
-chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
-	if (info.status == "complete") { //run when the page finished loading, otherwise it fires twice
-		var id = storage.contain(tab.url);
-		if (id != -1 && storage.get(id).autorun) { //check existance and autorun
-			storage.tab = tab;
-			javascript.run(storage.get(id), function() { //run functions
-				debug.log("Existing script executed.");
-			});
-		}
-	}
-});
-	
+        	
 </script>
