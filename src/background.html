@@ -7,15 +7,13 @@
     database.createTable();
     
     //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
-    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
-    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
-    //database.getLastInsertId(function(id) { console.log(id) });
     
     chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {
             database.getMatchedScript(tab.url, function(data) {
                 console.log(data);
+				console.log(tab.url);
                 if (data.autorun == "true") {
                     if (data.jquery == "true") injector.injectJQuery(tabId);
                     injector.injectScript(tabId, data.script);

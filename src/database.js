@@ -14,6 +14,7 @@ database.createTable = function() {
         tx.executeSql("CREATE TABLE IF NOT EXISTS Scripts (" +
                       "id INTEGER PRIMARY KEY ASC, "+
                       "url TEXT, " + 
+					  "description TEXT, " + 
                       "script TEXT, " + 
                       "autorun BOOLEAN, " + 
                       "jquery BOOLEAN)", 
@@ -27,12 +28,12 @@ database.dropTable = function() {
     });
 }
 
-database.addScript = function(url, script, autorun, jquery) {
+database.addScript = function(url, description, script, autorun, jquery) {
     database.db.transaction(function(tx){
         tx.executeSql("INSERT INTO Scripts " +
-                      "(url, script, autorun, jquery) " + 
-                      "VALUES (?,?,?,?)",
-                      [url, script, autorun, jquery],
+                      "(url, description, script, autorun, jquery) " + 
+                      "VALUES (?,?,?,?,?)",
+                      [url, description, script, autorun, jquery],
                       database.onSuccess,
                       database.onError);
     });
@@ -50,15 +51,16 @@ database.getLastInsertId = function(callback) {
     });
 }
 
-database.updateScript = function(id, url, script, autorun, jquery) {
+database.updateScript = function(id, url, description, script, autorun, jquery) {
     database.db.transaction(function(tx){
         tx.executeSql("UPDATE Scripts SET " + 
                       "url = ?, " +
+                      "description = ?, " +
                       "script = ?, " +
                       "autorun = ?, " +
                       "jquery = ? " +
                       "WHERE id = ?",
-                      [url, script, autorun, jquery, id],
+                      [url, description, script, autorun, jquery, id],
                       database.onSuccess,
                       database.onError);
     });
