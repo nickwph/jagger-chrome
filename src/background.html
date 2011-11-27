@@ -6,14 +6,14 @@
     database.dropTable();
     database.createTable();
     
-    //database.addScript("/en.wikipedia.org/", "alert('aaa');", true, false);
+    database.addScript("http://www.nicholasworkshop.com", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true);
     
     chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {
             database.getMatchedScript(tab.url, function(data) {
-                console.log(data);
-				console.log(tab.url);
+                //console.log(data);
+				console.log("Found " + tab.url);
                 if (data.autorun == "true") {
                     if (data.jquery == "true") injector.injectJQuery(tabId);
                     injector.injectScript(tabId, data.script);

@@ -45,7 +45,7 @@ database.getLastInsertId = function(callback) {
                       [], 
                       function(tx, rs) { 
                           callback(rs.rows.item(0).id); 
-                          console.log(rs.rows.item(0).id) 
+                          console.log(rs.rows.item(0).id);
                       },
                       database.onError);
     });
@@ -70,7 +70,10 @@ database.getAllScripts = function(callback) {
     database.db.transaction(function(tx) {
         tx.executeSql("SELECT * FROM scripts", 
                       [], 
-                      callback,
+                      function(tx, rs) { 
+                          callback(rs.rows); 
+                          //console.log(rs.rows);
+                      },
                       database.onError);
     });
 }
@@ -85,10 +88,10 @@ database.deleteScript = function(id) {
 }
 
 database.getMatchedScript = function(url, callback) {
-    var allScripts = database.getAllScripts(function(tx, rs) {
-        for (var i=0; i < rs.rows.length; i++) {
-			if (url.match(rs.rows.item(i).url)) {
-				callback(rs.rows.item(i));
+    database.getAllScripts(function(rows) {
+        for (var i=0; i<rows.length; i++) {
+			if (url.match(rows.item(i).url)) {
+				callback(rows.item(i));
                 break; // Get only the first one
 			}
 		}
