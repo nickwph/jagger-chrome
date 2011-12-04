@@ -1,6 +1,8 @@
 <html>
+
 <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+<link href='grid/960.css' rel='stylesheet' type='text/css'>
 
 <style type="text/less">
 
@@ -13,16 +15,45 @@ body {
 }	
 
 #header {
-	padding:10px;
 	
-	#title {
-		font-weight:600;
+	.title {
 		font-size:14px;
+		font-weight:600;
+	}
+	
+	.subtitle {
+		font-size:11px;
+		font-weight:600;
+		margin-bottom:0.5em;
+	}
+	
+	.description {
+		font-size:11px;
+		margin-bottom:10px;
+	}
+	
+	.add, .delete-all {
+		margin:4px 0px 4px 0px;
+		display:block;
+		padding: 4px;
+		border-style: solid;
+		border-width: 0 1px 1px 1px;
+		border-color: #D9D9D9;
+		background-color: #FFF;
+		position: relative;
+		border-top-width: 1px;
+		-webkit-border-radius: 4px;
+		text-align:center;
+		cursor:pointer;
+		
+		label {
+			cursor:pointer;
+			font-size:11px;
+		}
 	}
 }
 
 #content {
-	width:100%;
 		
 	.row {
 		border-style: solid;
@@ -37,85 +68,107 @@ body {
 			position:relative;
 		}
 		
-		.description, .url, .script {
-			padding:4px;
-			width:790px;
+		&.sample {
+			display:none;
+		}
+		
+		&:not(.sample) {
+			display:block;
+		}
+		
+		.detail {
+			width:419px;
 			float:left;
-			border-bottom: solid 1px #D9D9D9;
-			border-right: solid 1px #D9D9D9;
-			
-			&.script {
-				border-bottom:none;
-			}
-			
-			label {
-				top:8px;
-				left:4px;
-				color: #777;
-				position: absolute;
-				white-space: nowrap;
-				cursor: text;
-				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-				-webkit-transition: opacity .4s, font-size .5s;
-				-moz-transition: opacity .4s, font-size .5s;
-				-o-transition: opacity .4s, font-size .5s;
 				
-				&.hasome {
-					opacity: 0;
-					font-size: 0!important;
+			.description, .url, .script {
+				padding:4px;
+				border-bottom: solid 1px #D9D9D9;
+				border-right: solid 1px #D9D9D9;
+				&:last-child { border-bottom:none; }
+				
+				label {
+					top:8px;
+					left:4px;
+					color: #777;
+					position: absolute;
+					white-space: nowrap;
+					cursor: text;
+					text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+					-webkit-transition: opacity .4s, font-size .5s;
+					-moz-transition: opacity .4s, font-size .5s;
+					-o-transition: opacity .4s, font-size .5s;
+					
+					&.hasome {
+						opacity: 0;
+						font-size: 0!important;
+					}
 				}
-			}
-			
-			input[type="text"] {
-				border: 0;
-				font-family: 'Open Sans', sans-serif;
-				font-size:12px;
-				width:100%;
-			}
-			
-			textarea {
-				border: 0;
-				font-family: 'Ubuntu Mono', sans-serif;
-				font-size:12px;
-				width:100%;
-				height:60px;
+				
+				input[type="text"] {
+					border: 0;
+					font-family: 'Open Sans', sans-serif;
+					font-size:12px;
+					width:100%;
+				}
+				
+				textarea {
+					border: 0;
+					font-family: 'Ubuntu Mono', sans-serif;
+					font-size:12px;
+					width:100%;
+					height:96px;
+				}
 			}
 		}
+			
 		.action {
-			width:159px;
+			width:99px;
 			float:right;
 			
-			
 			div {
-				padding:4px;			
+				padding:8px;			
 				overflow:hidden;
-				height:23px;
 				border-bottom: solid 1px #D9D9D9;
-				
-				input[type="checkbox"] {
-					float:right;
-					margin:8px;
-				}
-				
-				&:last-child {
-					border-bottom: none;
-				}
+				&:last-child { border-bottom:none; }
 				
 				&.save, &.delete {
-					height:23px;
 					text-align:center;
 					background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0,#E0EFD3),color-stop(1,#EFF8E6));
 					font-size:16px;
 					font-weight: 600;
 					text-shadow: #EDF6E5 1px 1px 0;
+					cursor:pointer;
+					font-size:11px;
+					label { cursor:pointer; }
 					
 					&:hover {
 						background-image: -webkit-gradient(linear,left bottom,left top,color-stop(1,#E0EFD3),color-stop(0,#EFF8E6));
 					}
 				}
+				
+				&.autorun, &.jquery, &.regex {
+					text-align:center;
+					font-size:11px;
+					
+					input[type="checkbox"] {
+						float:right;
+					}				
+				}
 			}
 		}
 		
+		.status {
+			float:left;
+			width:100%;
+			padding:0px 4px 0px 4px;
+			border-top:solid 1px #D9D9D9;
+			font-size:11px;
+			display:none;
+			
+			&.unsaved {
+				background-color:#FF0000;
+			}
+		}
 	}
 }
 
@@ -127,16 +180,27 @@ body {
 	<script type="text/javascript" src="jquery/jquery-1.6.1.min.js"></script>
 </head>
 
-<body>
+<body class="container_16">
 
-	<div id="header">
-		<div id="title">Javascript Injector</div>
-	</div>
-
-	<div id="content">
+	<div id="content" class="grid_9 prefix_2">
 		<div class="row sample">
+			
+			<div class="detail">
+				<div class="url">
+					<label class="hasome">Url</label>
+					<input type="text" value="http://www.nicholasworkshop.com/"/>
+				</div>
+				<div class="description">
+					<label class="hasome">Title</label>
+					<input type="text" value="Nicholas Workshop Debug"/>
+				</div>
+				<div class="script">
+					<label class="hasome">Script</label>
+					<textarea>alert('Script Injected!');</textarea>
+				</div>
+			</div>
+			
 			<div class="action">
-		
 				<div class="save">
 					<label>Save</label>
 				</div>
@@ -151,27 +215,34 @@ body {
 					<label>jQuery</label>
 					<input type="checkbox" checked />
 				</div>
+				<div class="regex">
+					<label>RegEx</label>
+					<input type="checkbox" />
+				</div>
 			</div>
-				<div class="description">
-					<label class="hasome">Title</label>
-					<input type="text" value="Nicholas Workshop Debug"/>
-				</div>
-				<div class="url">
-					<label class="hasome">Url</label>
-					<input type="text" value="http://www.nicholasworkshop.com"/>
-				</div>
-				<div class="script">
-					<label class="hasome">Script</label>
-					<textarea>alert('Script Injected!');</textarea>
-				</div>
+			
+			<div class="status unsaved">Unsaved.</div>
+			
 		</div>
 	</div>
-	
-	<div id="action">
-		<div id="delete-selected">
-			<label>Delete Selected</label>
+
+	<div id="header" class="grid_3 suffix_2">
+		<div class="title">Javascript Injector</div>
+		<div class="subtitle">By Nicholas Workshop</div>
+		<div class="description">
+			It can help you save your JavaScript and auto inject it onto the web page. 
+			This is a Chrome extension which can let you execute javascript and get immediate result. 
+			It allows you to save the script you injected, and run everytime you open the webpage! 
+			Also, jQuery is enabled, you can freely modify pages with it!
+		</div>
+		<div class="add">
+			<label>Add New</label>
+		</div>
+		<div class="delete-all">
+			<label>Delete All</label>
 		</div>
 	</div>
+
 
 </body>
 
@@ -182,16 +253,64 @@ body {
 	
 	background.database.getAllScripts(function(rows) {
         for (var i=0; i < rows.length; i++) {
-			var element = $("div.row.sample").clone().removeClass("sample");
 			var data = rows.item(i);
-			element.find(".url input").val(data.url).parent().find("label").addClass(data.url!=""?"hasome":"").removeClass(data.url==""?"hasome":"");
-			element.find(".description input").val(data.description).parent().find("label").addClass(data.description!=""?"hasome":"").removeClass(data.description==""?"hasome":"");
-			element.find(".script textarea").val(data.script).parent().find("label").addClass(data.script!=""?"hasome":"").removeClass(data.script==""?"hasome":"");
-			element.find(".autorun input").attr('checked', data.autorun=="true"?true:false);
-			element.find(".jquery input").attr('checked', data.jquery=="true"?true:false);
+			var element = $("div.row.sample").clone().removeClass("sample").attr("data-id",data.id);
+			element.find("div.save").click(updateRecord);
+			element.find("div.delete").click(deleteRecord);
+			
+			element.find("div.url>input")
+				.val(data.url)
+				.parent().find("label")
+				.addClass(data.url!=""?"hasome":"")
+				.removeClass(data.url==""?"hasome":"");
+			element.find("div.description>input")
+				.val(data.description)
+				.parent().find("label")
+				.addClass(data.description!=""?"hasome":"")
+				.removeClass(data.description==""?"hasome":"");
+			element.find("div.script>textarea")
+				.val(data.script)
+				.parent().find("label")
+				.addClass(data.script!=""?"hasome":"")
+				.removeClass(data.script==""?"hasome":"");
+			element.find("div.autorun>input")
+				.attr('checked',data.autorun=="true"?true:false);
+			element.find("div.jquery>input")
+				.attr('checked',data.jquery=="true"?true:false);
+			element.find("div.regex>input")
+				.attr('checked',data.regex=="true"?true:false);
+			
 			$("#content").append(element);
 		}
     });
+	
+	$("div.add").click(function() {
+		var element = $("div.row.sample").clone().removeClass("sample");
+    	background.database.addScript("http://nicholasworkshop.com/", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true, false);
+		background.database.getLastInsertId(function(id) { element.attr("data-id",id) });
+		element.find("div.save").click(updateRecord);
+		element.find("div.delete").click(deleteRecord);
+		$("#content").append(element);
+	});
+	
+	function updateRecord() {
+		var element = $(this).parent().parent();
+		background.database.updateScript(element.attr("data-id"),
+										 element.find("div.url>input").val(), 
+										 element.find("div.description>input").val(), 
+										 element.find("div.script>textarea").val(), 
+										 element.find("div.autorun>input").attr('checked')?true:false, 
+										 element.find("div.jquery>input").attr('checked')?true:false,
+										 element.find("div.regex>input").attr('checked')?true:false
+		);
+	}
+	
+	function deleteRecord() {
+		var element = $(this).parent().parent();
+		background.database.deleteScript(element.attr("data-id"));
+		element.slideUp('slow', function() { $(this).remove() });
+	}
+	
 </script>
 
 </html>

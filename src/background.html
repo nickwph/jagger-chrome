@@ -6,17 +6,25 @@
     database.dropTable();
     database.createTable();
     
-    database.addScript("http://www.nicholasworkshop.com", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true);
+    database.addScript("http://nicholasworkshop.com/", 
+	                   "Nicholas Workshop", 
+					   "alert('JavaScript Injected!');", 
+					   true, true, false);
+    database.addScript("/www.facebook.com/", 
+	                   "Trick on Facebook", 
+					   "$('#contentCol').prepend('This is a demo effect by JavaScript Injector, go to extension>option to cancel this.');", true, true, true);
     
     chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+		console.log("Website changing: " + info.status + " url: " + tab.url);
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {
+			console.log("Website detected: " + tab.url);
             database.getMatchedScript(tab.url, function(data) {
                 //console.log(data);
-				console.log("Found " + tab.url);
+				console.log("Match found: " + tab.url);
                 if (data.autorun == "true") {
-                    if (data.jquery == "true") injector.injectJQuery(tabId);
-                    injector.injectScript(tabId, data.script);
+                    if (data.jquery == "true") injector.injectJQuery(tabId, function() { injector.injectScript(tabId, data.script) });
+                    else injector.injectScript(tabId, data.script);
                 }
             }); 
         }

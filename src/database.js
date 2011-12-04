@@ -17,7 +17,8 @@ database.createTable = function() {
 					  "description TEXT, " + 
                       "script TEXT, " + 
                       "autorun BOOLEAN, " + 
-                      "jquery BOOLEAN)", 
+                      "jquery BOOLEAN," +
+					  "regex BOOLEAN)", 
                       []);
     });
 }
@@ -28,12 +29,12 @@ database.dropTable = function() {
     });
 }
 
-database.addScript = function(url, description, script, autorun, jquery) {
+database.addScript = function(url, description, script, autorun, jquery, regex) {
     database.db.transaction(function(tx){
         tx.executeSql("INSERT INTO Scripts " +
-                      "(url, description, script, autorun, jquery) " + 
-                      "VALUES (?,?,?,?,?)",
-                      [url, description, script, autorun, jquery],
+                      "(url, description, script, autorun, jquery, regex) " + 
+                      "VALUES (?,?,?,?,?,?)",
+                      [url, description, script, autorun, jquery, regex],
                       database.onSuccess,
                       database.onError);
     });
@@ -51,16 +52,17 @@ database.getLastInsertId = function(callback) {
     });
 }
 
-database.updateScript = function(id, url, description, script, autorun, jquery) {
+database.updateScript = function(id, url, description, script, autorun, jquery, regex) {
     database.db.transaction(function(tx){
         tx.executeSql("UPDATE Scripts SET " + 
                       "url = ?, " +
                       "description = ?, " +
                       "script = ?, " +
                       "autorun = ?, " +
-                      "jquery = ? " +
+                      "jquery = ?, " +
+                      "regex = ? " +
                       "WHERE id = ?",
-                      [url, description, script, autorun, jquery, id],
+                      [url, description, script, autorun, jquery, regex, id],
                       database.onSuccess,
                       database.onError);
     });
@@ -70,10 +72,7 @@ database.getAllScripts = function(callback) {
     database.db.transaction(function(tx) {
         tx.executeSql("SELECT * FROM scripts", 
                       [], 
-                      function(tx, rs) { 
-                          callback(rs.rows); 
-                          //console.log(rs.rows);
-                      },
+                      function(tx, rs) { callback(rs.rows) },
                       database.onError);
     });
 }
@@ -90,7 +89,8 @@ database.deleteScript = function(id) {
 database.getMatchedScript = function(url, callback) {
     database.getAllScripts(function(rows) {
         for (var i=0; i<rows.length; i++) {
-			if (url.match(rows.item(i).url)) {
+			if ((rows.item(i).regex=="true" && url.match(rows.item(i).url)) || (rows.item(i).regex=="false" && url==rows.item(i).url)) {
+			//if (url.match(rows.item(i).url)) {
 				callback(rows.item(i));
                 break; // Get only the first one
 			}
@@ -99,56 +99,11 @@ database.getMatchedScript = function(url, callback) {
 }
 
 database.onSuccess = function(tx, r) {
+	//console.log("database.onSuccess");
     //database.getAllTodoItems(loadTodoItems);
 }
 
 database.onError = function(tx, e) {
+	console.log("database.onError: " + e.message);
     alert("There has been an error: " + e.message);
-}
-
-
-/* ---- */
-
-database.getAllTodoItems = function(renderFunc) {
-    database.db.transaction(function(tx) {
-        tx.executeSql("SELECT * FROM Scripts", 
-                      [], 
-                      renderFunc,
-                      database.onError);
-    });
-}
-
-database.deleteTodo = function(id) {
-    database.db.transaction(function(tx){
-        tx.executeSql("DELETE FROM Scripts WHERE ID=?", 
-                      [id],
-                      database.onSuccess,
-                      database.onError);
-    });
-}
-
-function loadTodoItems(tx, rs) {
-    var rowOutput = "";
-    var todoItems = document.getElementById("todoItems");
-    for (var i=0; i < rs.rows.length; i++) {
-        rowOutput += renderTodo(rs.rows.item(i));
-    }
-    
-    todoItems.innerHTML = rowOutput;
-}
-
-function renderTodo(row) {
-    return "<li>" + row.todo  + " [<a href='javascript:void(0);'  onclick='database.deleteTodo(" + row.ID +");'>Delete</a>]</li>";
-}
-
-function init() {
-    database.open();
-    database.createTable();
-    database.getAllTodoItems(loadTodoItems);
-}
-
-function addTodo() {
-    var todo = document.getElementById("todo");
-    database.addTodo(todo.value);
-    todo.value = "";
 }

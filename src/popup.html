@@ -114,10 +114,12 @@ textarea {
 
 #control {
 	display:block;
+	overflow:hidden;
+	
 	div {
 		.entry;
 		
-		&.autorun, &.jquery {
+		&.autorun, &.jquery, &.regex {
 			width:90px;
 			float:left;
 			text-align:center;
@@ -127,7 +129,7 @@ textarea {
 				.entry.first-tab;
 			}
 			
-			&.jquery {
+			&.regex {
 				.entry.last-tab;
 			}
 		}
@@ -186,6 +188,10 @@ textarea {
 			<label>jQuery</label>
 			<input type="checkbox" checked />
 		</div>
+		<div class="regex">
+			<label>RegEx</label>
+			<input type="checkbox" />
+		</div>
 		<div class="inject">
 			<label>Inject</label>
 		</div>
@@ -216,11 +222,7 @@ textarea {
 				$("div.script>textarea").val(data.script).parent().find("label").addClass(data.script!=""?"hasome":"");
 				$("div.autorun>input").attr('checked', data.autorun=="true"?true:false);
 				$("div.jquery>input").attr('checked', data.jquery=="true"?true:false);
-				if (data.autorun == "true") {
-					if (data.jquery == "true") injector.injectJQuery(tabId);
-					injector.injectScript(tabId, data.script);
-				}
-				
+				$("div.regex>input").attr('checked', data.regex=="true"?true:false);
 			}); 
 		});
 	});
@@ -238,7 +240,8 @@ textarea {
 											 $("div.description>input").val(), 
                                              $("div.script>textarea").val(), 
                                              $("div.autorun>input").attr('checked')?true:false, 
-                                             $("div.jquery>input").attr('checked')?true:false
+                                             $("div.jquery>input").attr('checked')?true:false,
+                                             $("div.regex>input").attr('checked')?true:false
             );
         }
         else {
@@ -246,7 +249,8 @@ textarea {
 										  $("div.description>input").val(), 
                                           $("div.script>textarea").val(), 
                                           $("div.autorun>input").attr('checked')?true:false, 
-                                          $("div.jquery>input").attr('checked')?true:false
+                                          $("div.jquery>input").attr('checked')?true:false,
+                                          $("div.regex>input").attr('checked')?true:false
             );
             database.getLastInsertId(function(id) { savedId = id });
             saved = true;
