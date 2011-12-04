@@ -3,17 +3,20 @@
 <script>
     
     database.open();
-    database.dropTable();
     database.createTable();
     
-    database.addScript("http://nicholasworkshop.com/", 
-	                   "Nicholas Workshop", 
-					   "alert('JavaScript Injected!');", 
-					   true, true, false);
-    database.addScript("/www.facebook.com/", 
-	                   "Trick on Facebook", 
-					   "$('#navHome>a').html('Nicholas Workshop').attr('href','http://nicholasworkshop.com/');", true, true, true);
-    
+	// First run
+	if (localStorage['firstRun'] != 'true') {
+		database.addScript("http://nicholasworkshop.com/", 
+						   "Nicholas Workshop", 
+						   "alert('JavaScript Injected!');", 
+						   true, true, false);
+		database.addScript("/www.facebook.com/", 
+						   "Trick on Facebook", 
+						   "$('#navHome>a').html('Nicholas Workshop').attr('href','http://nicholasworkshop.com/');", true, true, true);
+		localStorage['firstRun'] = 'true';
+	}
+	
     chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {

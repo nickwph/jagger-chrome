@@ -312,12 +312,12 @@ body {
 	});
 	
 	$("div.add").click(function() {
-		var element = $("div.row.sample").clone().removeClass("sample").hide();
+		var element = $("div.row.sample").clone().removeClass("sample");
     	background.database.addScript("http://nicholasworkshop.com/", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true, false);
 		background.database.getLastInsertId(function(id) { element.attr("data-id",id) });
 		element.find("div.save").click(updateRecord);
 		element.find("div.delete").click(deleteRecord);
-		element.appendTo("#content").slideDown('slow');
+		element.hide().appendTo("#content").slideDown('slow');
 		$("#content").trigger('change');
 	});
 	
