@@ -54,7 +54,21 @@ body {
 }
 
 #content {
-		
+	
+	&.empty {
+		.empty-msg {
+			padding-top:100px;
+			display:block;
+			text-align:center;
+			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+			font-size:16px;
+		}
+	}
+	
+	.empty-msg {
+		display:none;
+	}
+	
 	.row {
 		border-style: solid;
 		border-width: 1px;
@@ -183,6 +197,9 @@ body {
 <body class="container_16">
 
 	<div id="content" class="grid_9 prefix_2">
+	
+		<div class="empty-msg">The database is empty, click "Add New" to start.</div>
+	
 		<div class="row sample">
 			
 			<div class="detail">
@@ -252,7 +269,7 @@ body {
 	function create(tag) { return $(document.createElement(tag)) }
 	
 	background.database.getAllScripts(function(rows) {
-        for (var i=0; i < rows.length; i++) {
+		for (var i=0; i < rows.length; i++) {
 			var data = rows.item(i);
 			var element = $("div.row.sample").clone().removeClass("sample").attr("data-id",data.id);
 			element.find("div.save").click(updateRecord);
@@ -282,15 +299,35 @@ body {
 			
 			$("#content").append(element);
 		}
+		$("#content").trigger('change');
     });
 	
+	$("#content").change(function(e) {
+		if ($(".row").length<=1) {
+			$("#content").addClass("empty");
+		}
+		else {
+			$("#content").removeClass("empty");
+		}
+	});
+	
 	$("div.add").click(function() {
-		var element = $("div.row.sample").clone().removeClass("sample");
+		var element = $("div.row.sample").clone().removeClass("sample").hide();
     	background.database.addScript("http://nicholasworkshop.com/", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true, false);
 		background.database.getLastInsertId(function(id) { element.attr("data-id",id) });
 		element.find("div.save").click(updateRecord);
 		element.find("div.delete").click(deleteRecord);
-		$("#content").append(element);
+		element.appendTo("#content").slideDown('slow');
+		$("#content").trigger('change');
+	});
+	
+	$("div.delete-all").click(function() {
+		background.database.dropTable();
+		background.database.createTable();
+		$("div.row:not(.sample)").slideUp('slow', function() { 
+			$(this).remove();
+			$("#content").trigger('change');
+		});
 	});
 	
 	function updateRecord() {
@@ -308,7 +345,10 @@ body {
 	function deleteRecord() {
 		var element = $(this).parent().parent();
 		background.database.deleteScript(element.attr("data-id"));
-		element.slideUp('slow', function() { $(this).remove() });
+		element.slideUp('slow', function() { 
+			$(this).remove();
+			$("#content").trigger('change');
+		});
 	}
 	
 </script>

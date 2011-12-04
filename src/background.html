@@ -12,15 +12,12 @@
 					   true, true, false);
     database.addScript("/www.facebook.com/", 
 	                   "Trick on Facebook", 
-					   "$('#contentCol').prepend('This is a demo effect by JavaScript Injector, go to extension>option to cancel this.');", true, true, true);
+					   "$('#navHome>a').html('Nicholas Workshop').attr('href','http://nicholasworkshop.com/');", true, true, true);
     
     chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
-		console.log("Website changing: " + info.status + " url: " + tab.url);
         //run when the page finished loading, otherwise it fires twice
         if (info.status == "complete") {
-			console.log("Website detected: " + tab.url);
             database.getMatchedScript(tab.url, function(data) {
-                //console.log(data);
 				console.log("Match found: " + tab.url);
                 if (data.autorun == "true") {
                     if (data.jquery == "true") injector.injectJQuery(tabId, function() { injector.injectScript(tabId, data.script) });
