@@ -4,16 +4,16 @@
 	"description": "It can help you save your JavaScript and auto inject it onto the web page.",
     
 	"icons": { 
-		"16": "ico/icon16.png",
-		"48": "ico/icon48.png",
-		"128": "ico/icon128.png" 
+		"16":  "icon.png",
+		"48":  "icon.png",
+		"128": "icon.png" 
     },
         
 	"background_page": "background.html",
 	"options_page": "options.html",
     
 	"browser_action": {
-		"default_icon": "ico/icon256.png",
+		"default_icon": "icon.png",
 		"popup": "popup.html"
 	},  
     
