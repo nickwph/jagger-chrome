@@ -1,27 +1,41 @@
 {
-	"name": "JavaScript Injector: Nicholas Workshop",
-	"version": "3.0.0",
-	"description": "It can help you save your JavaScript and auto inject it onto the web page.",
-    
-	"icons": { 
-		"16":  "icon.png",
-		"48":  "icon.png",
-		"128": "icon.png" 
+    "name": "Jaeger",
+    "version": "4.0.0",
+    "description": "Let's hijack web pages!",
+    "manifest_version": 2,
+
+    "icons": {
+        "16": "static/icon.png",
+        "48": "static/icon.png",
+        "128": "static/icon.png"
     },
-        
-	"background_page": "background.html",
-	"options_page": "options.html",
-    
-	"browser_action": {
-		"default_icon": "icon.png",
-		"popup": "popup.html"
-	},  
-    
-    "permissions": [ 
-        "tabs", 
-        "http://*/*", 
+
+    "background": {
+        "page": "view/background.html"
+    },
+
+//    "background_page": "background.html",
+    "options_page": "view/options.html",
+
+//    "browser_action": {
+//        "default_icon": "icon.png",
+//        "popup": "popup.html"
+//    },
+    "browser_action": {
+        "default_icon": "static/icon.png",
+//        "default_icon": {                    // optional
+//            "19": "images/icon19.png",           // optional
+//            "38": "images/icon38.png"            // optional
+//        },
+        "default_title": "Google Mail",      // optional; shown in tooltip
+        "default_popup": "view/popup.html"        // optional
+    },
+
+    "permissions": [
+        "tabs",
+        "http://*/*",
         "https://*/*"
     ],
-        
-	"update_url": "http://clients2.google.com/service/update2/crx"
+
+    "update_url": "http://clients2.google.com/service/update2/crx"
 }
