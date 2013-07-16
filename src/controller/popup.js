@@ -1,10 +1,35 @@
-var editor = ace.edit("editor");
-//editor.setTheme("ace/theme/monokai");
-editor.renderer.setShowGutter(false);
-editor.getSession().setMode("ace/mode/javascript");
-editor.getSession().setTabSize(2);
-//editor.getSession().setUseWrapMode(true);
-editor.getSession().setUseSoftTabs(true);
+$(document).ready(function () {
+
+    // init editor
+    var editor = ace.edit("editor");
+    editor.renderer.setShowGutter(false);
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.getSession().setTabSize(4);
+    editor.getSession().setUseSoftTabs(true);
+    editor.getSession().setValue("function foo() {\n    var x = 'try me';\n    alert('successful');\n}\n\nfoo();");
+
+    $('div.url>input[type="text"]').keyup(function () {
+        var url = $(this).val();
+        chrome.windows.getCurrent(function (window) {
+            chrome.tabs.query({active: true, windowId: window.id}, function (tab) {
+                var activeTab = tab[0];
+                console.log(activeTab.url);
+                console.log(url);
+                console.log(activeTab.url.match(url));
+                var result = activeTab.url.match(url);
+
+            });
+        });
+    });
+
+    chrome.windows.getCurrent(function (window) {
+        chrome.tabs.query({active: true, windowId: window.id}, function (tab) {
+            var activeTab = tab[0];
+            console.log(activeTab.url);
+        });
+    });
+});
+
 
 //$("input,textarea").keyup(function () {
 //    if ($(this).val() == "") $(this).parent().find("label").removeClass("hasome");
