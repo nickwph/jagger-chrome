@@ -7,6 +7,7 @@
     <script type="text/javascript" src="../library/jquery/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="../library/ace/src-min-noconflict/ace.js" charset="utf-8"></script>
     <script type="text/javascript" src="../controller/popup.js"></script>
+    <script type="text/javascript" src="../model/injector.js"></script>
 </head>
 
 <body>
@@ -27,15 +28,20 @@
         <label>Url</label>
         <input id="url-textfield" type="text" value=""/>
     </div>
-    <div id="message-entry">
-        Message
+    <div id="message-entry">Message</div>
+</div>
+
+
+<div class="bubble-table">
+    <div id="editor-title">Put your JavaScripts below and inject!</div>
+    <div id="editor-wrapper">
+        <div id="editor"></div>
     </div>
 </div>
 
-<div id="editor-wrapper">
-    <div id="editor"></div>
+<div class="bubble-table">
+    <div id="donate-entry">Donate me if you think this extension helps, Thanks! </div>
 </div>
-
 <div class="bubble-panel">
     <div>
         <label>Autorun</label>
@@ -45,13 +51,13 @@
         <label>jQuery</label>
         <input type="checkbox" checked/>
     </div>
-    <div>
-        <label>RegEx</label>
-        <input type="checkbox"/>
-    </div>
+    <!--<div>-->
+    <!--<label>RegEx</label>-->
+    <!--<input type="checkbox"/>-->
+    <!--</div>-->
 </div>
 
-<div class="bubble-button">
+<div class="bubble-button" id="inject-button">
     <label>Inject</label>
 </div>
 
