@@ -8,25 +8,83 @@ $(document).ready(function () {
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setValue("function foo() {\n    var x = 'try me';\n    alert('successful');\n}\n\nfoo();");
 
-    $('div.url>input[type="text"]').keyup(function () {
+    // activate placeholders
+    $("input, textarea").keyup(function () {
+        if ($(this).val() == "") $(this).parent().find("label").removeClass("hasome");
+        else $(this).parent().find("label").addClass("hasome");
+    });
+
+    // check if url is matches
+    $('#url-textfield').keyup(function () {
         var url = $(this).val();
         chrome.windows.getCurrent(function (window) {
             chrome.tabs.query({active: true, windowId: window.id}, function (tab) {
-                var activeTab = tab[0];
-                console.log(activeTab.url);
-                console.log(url);
-                console.log(activeTab.url.match(url));
-                var result = activeTab.url.match(url);
-
+                try {
+                    var activeTab = tab[0];
+                    var result = activeTab.url.match(url);
+                    if (result) {
+                        $('#message-entry')
+                            .removeClass()
+                            .addClass('pass')
+                            .html("Pass. Script will apply to this web page.");
+                    }
+                    else {
+                        $('#message-entry')
+                            .removeClass()
+                            .addClass('error')
+                            .html("Url does not match! Script will not apply to this web page!");
+                    }
+                }
+                catch (exception) {
+                    $('#message-entry')
+                        .removeClass()
+                        .addClass('error')
+                        .html(exception.message);
+                    throw exception;
+                }
             });
         });
     });
 
+    // use current url
     chrome.windows.getCurrent(function (window) {
         chrome.tabs.query({active: true, windowId: window.id}, function (tab) {
             var activeTab = tab[0];
-            console.log(activeTab.url);
+            $("#url-textfield").val(activeTab.url).keyup();
         });
+    });
+
+    $("div.inject").click(function () {
+        chrome.windows.getCurrent(function (window) {
+            chrome.tabs.query({active: true, windowId: window.id}, function (tab) {
+                var background = chrome.extension.getBackgroundPage();
+                if ($("div.jquery>input").checked == "true") background.injector.injectJQuery(tab.id);
+                background.injector.injectScript(tab.id, $("div.script>textarea").val());
+            });
+        });
+//        if (saved) {
+//            background.database.updateScript(savedId,
+//                $("div.url>input").val(),
+//                $("div.description>input").val(),
+//                $("div.script>textarea").val(),
+//                $("div.autorun>input").attr('checked') ? true : false,
+//                $("div.jquery>input").attr('checked') ? true : false,
+//                $("div.regex>input").attr('checked') ? true : false
+//            );
+//        }
+//        else {
+//            background.database.addScript($("div.url>input").val(),
+//                $("div.description>input").val(),
+//                $("div.script>textarea").val(),
+//                $("div.autorun>input").attr('checked') ? true : false,
+//                $("div.jquery>input").attr('checked') ? true : false,
+//                $("div.regex>input").attr('checked') ? true : false
+//            );
+//            database.getLastInsertId(function (id) {
+//                savedId = id
+//            });
+//            saved = true;
+//        }
     });
 });
 
