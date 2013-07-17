@@ -11,52 +11,48 @@
 
 <body>
 
-<div id="information">
-    <div class="title">
+<div class="bubble-table">
+    <div class='awesome-textfield'>
         <label>Title</label>
         <input type="text" value=""/>
     </div>
-    <div class="description">
+    <div class='awesome-textfield'>
         <label>Description</label>
-        <input type="text" value=""/>
+        <textarea rows="2"></textarea>
     </div>
 </div>
 
-<div id="information">
-    <div class="url">
+<div class="bubble-table">
+    <div class='awesome-textfield'>
         <label>Url</label>
-        <input type="text" value=""/>
+        <input id="url-textfield" type="text" value=""/>
     </div>
-    <div class="url">
+    <div id="message-entry">
         Message
     </div>
 </div>
 
 <div id="editor-wrapper">
-    <div id="editor">
-        function foo(items) {
-        var x = "All this is syntax highlighted";
-        return x;
-        }
-    </div>
+    <div id="editor"></div>
 </div>
 
-<div id="control">
-    <div class="autorun">
+<div class="bubble-panel">
+    <div>
         <label>Autorun</label>
         <input type="checkbox" checked/>
     </div>
-    <div class="jquery">
+    <div>
         <label>jQuery</label>
         <input type="checkbox" checked/>
     </div>
-    <div class="regex">
+    <div>
         <label>RegEx</label>
         <input type="checkbox"/>
     </div>
-    <div class="inject">
-        <label>Inject</label>
-    </div>
+</div>
+
+<div class="bubble-button">
+    <label>Inject</label>
 </div>
 
 </body>
