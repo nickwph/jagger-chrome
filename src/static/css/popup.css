@@ -1,11 +1,7 @@
-body {
-  background-color: #F2F5F6;
-  width: 450px;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 12px;
-  padding: 10px;
-}
-.entry {
+/**
+ * Bubble shape element
+ */
+.bubble-entry {
   display: block;
   margin: 0;
   padding: 4px;
@@ -15,55 +11,38 @@ body {
   background-color: #FFF;
   position: relative;
 }
-.entry.first-row {
+.bubble-entry.first-row {
   border-top-width: 1px;
   -webkit-border-top-left-radius: 4px;
   -webkit-border-top-right-radius: 4px;
 }
-.entry.last-row {
+.bubble-entry.last-row {
   -webkit-border-bottom-left-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
 }
-.entry.first-tab {
+.bubble-entry.first-tab {
   border-left-width: 1px !important;
   -webkit-border-top-left-radius: 4px !important;
   -webkit-border-bottom-left-radius: 4px !important;
 }
-.entry.last-tab {
+.bubble-entry.last-tab {
   border-right-width: 1px !important;
   -webkit-border-top-right-radius: 4px !important;
   -webkit-border-bottom-right-radius: 4px !important;
 }
-.entry.solo {
+.bubble-entry.solo {
   border-top-width: 1px;
   -webkit-border-radius: 4px;
 }
-input[type="text"] {
-  border: 0;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 12px;
-  width: 100%;
-}
-textarea {
-  border: 0;
-  font-family: 'Ubuntu Mono', sans-serif;
-  font-size: 12px;
-  width: 100%;
-}
-#header {
-  padding-bottom: 10px;
-  padding-left: 5px;
-}
-#header .title {
-  font-size: 14px;
-  font-weight: 600;
-}
-#information {
+/**
+ * Vertical table with bubble entries
+ */
+.bubble-table {
   margin-bottom: 5px;
   display: block;
   width: 100%;
 }
-#information div {
+.bubble-table div {
   display: block;
   margin: 0;
   padding: 4px;
@@ -74,40 +53,119 @@ textarea {
   position: relative;
   width: 440px;
 }
-#information div.first-row {
+.bubble-table div.first-row {
   border-top-width: 1px;
   -webkit-border-top-left-radius: 4px;
   -webkit-border-top-right-radius: 4px;
 }
-#information div.last-row {
+.bubble-table div.last-row {
   -webkit-border-bottom-left-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
 }
-#information div.first-tab {
+.bubble-table div.first-tab {
   border-left-width: 1px !important;
   -webkit-border-top-left-radius: 4px !important;
   -webkit-border-bottom-left-radius: 4px !important;
 }
-#information div.last-tab {
+.bubble-table div.last-tab {
   border-right-width: 1px !important;
   -webkit-border-top-right-radius: 4px !important;
   -webkit-border-bottom-right-radius: 4px !important;
 }
-#information div.solo {
+.bubble-table div.solo {
   border-top-width: 1px;
   -webkit-border-radius: 4px;
 }
-#information div:first-child {
+.bubble-table div:first-child {
   border-top-width: 1px;
   -webkit-border-top-left-radius: 4px;
   -webkit-border-top-right-radius: 4px;
 }
-#information div:last-child {
+.bubble-table div:last-child {
   -webkit-border-bottom-left-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
 }
-#information div label {
-  top: 8px;
+/**
+ * Horizontal table with bubble entries
+ */
+.bubble-panel {
+  display: inline-block;
+  overflow: hidden;
+}
+.bubble-panel div {
+  display: block;
+  margin: 0;
+  padding: 4px;
+  border-style: solid;
+  border-width: 0 1px 1px 1px;
+  border-color: #D9D9D9;
+  background-color: #FFF;
+  position: relative;
+  width: 90px;
+  height: 23px;
+  float: left;
+  text-align: center;
+  border-width: 1px 1px 1px 0;
+  padding: 6px 4px 2px 4px;
+}
+.bubble-panel div.first-row {
+  border-top-width: 1px;
+  -webkit-border-top-left-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
+}
+.bubble-panel div.last-row {
+  -webkit-border-bottom-left-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+}
+.bubble-panel div.first-tab {
+  border-left-width: 1px !important;
+  -webkit-border-top-left-radius: 4px !important;
+  -webkit-border-bottom-left-radius: 4px !important;
+}
+.bubble-panel div.last-tab {
+  border-right-width: 1px !important;
+  -webkit-border-top-right-radius: 4px !important;
+  -webkit-border-bottom-right-radius: 4px !important;
+}
+.bubble-panel div.solo {
+  border-top-width: 1px;
+  -webkit-border-radius: 4px;
+}
+.bubble-panel div:first-child {
+  border-left-width: 1px !important;
+  -webkit-border-top-left-radius: 4px !important;
+  -webkit-border-bottom-left-radius: 4px !important;
+}
+.bubble-panel div:last-child {
+  border-right-width: 1px !important;
+  -webkit-border-top-right-radius: 4px !important;
+  -webkit-border-bottom-right-radius: 4px !important;
+}
+.bubble-button {
+  width: 90px;
+  height: 23px;
+  float: right;
+  text-align: center;
+  color: #59595B;
+  font-weight: bold;
+  text-shadow: #EDF6E5 1px 1px 0;
+  -webkit-border-radius: 4px;
+  border: 1px solid #B2C0A6;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e0efd3), color-stop(1, #eff8e6));
+  padding: 6px 4px 2px 4px;
+}
+.bubble-entry.solo .bubble-button:hover {
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, #e0efd3), color-stop(0, #eff8e6));
+}
+/**
+ * Textfield with label at the top
+ */
+.awesome-textfield {
+  position: relative;
+}
+.awesome-textfield label {
+  top: 6px;
+  left: 6px;
   color: #777;
   position: absolute;
   white-space: nowrap;
@@ -117,85 +175,52 @@ textarea {
   -moz-transition: opacity 0.4s, font-size 0.5s;
   -o-transition: opacity 0.4s, font-size 0.5s;
 }
-#information div label.hasome {
+.awesome-textfield label.hasome {
   opacity: 0;
   font-size: 0 !important;
 }
-#control {
-  display: block;
-  overflow: hidden;
+.awesome-textfield input[type="text"] {
+  border: 0;
+  width: 100%;
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif;
 }
-#control div {
-  display: block;
-  margin: 0;
-  padding: 4px;
-  border-style: solid;
-  border-width: 0 1px 1px 1px;
-  border-color: #D9D9D9;
+.awesome-textfield textarea {
+  margin-top: -1px;
+  margin-left: -1px;
+  border: 0;
+  width: 100%;
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif;
+}
+body {
+  background-color: #F2F5F6;
+  width: 450px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  padding: 10px;
+}
+#message-entry {
+  text-align: center;
   background-color: #FFF;
+  height: 23px;
+  padding: 8px 4px 0px 4px;
+  color: #000;
+}
+#message-entry.pass {
+  background-color: #2D2;
+  color: #000;
+}
+#message-entry.error {
+  background-color: #D22;
+  color: #FFF;
+}
+#editor-wrapper {
   position: relative;
+  height: 300px;
+  width: 100%;
 }
-#control div.first-row {
-  border-top-width: 1px;
-  -webkit-border-top-left-radius: 4px;
-  -webkit-border-top-right-radius: 4px;
-}
-#control div.last-row {
-  -webkit-border-bottom-left-radius: 4px;
-  -webkit-border-bottom-right-radius: 4px;
-}
-#control div.first-tab {
-  border-left-width: 1px !important;
-  -webkit-border-top-left-radius: 4px !important;
-  -webkit-border-bottom-left-radius: 4px !important;
-}
-#control div.last-tab {
-  border-right-width: 1px !important;
-  -webkit-border-top-right-radius: 4px !important;
-  -webkit-border-bottom-right-radius: 4px !important;
-}
-#control div.solo {
-  border-top-width: 1px;
-  -webkit-border-radius: 4px;
-}
-#control div.autorun,
-#control div.jquery,
-#control div.regex {
-  width: 90px;
-  float: left;
-  text-align: center;
-  border-width: 1px 1px 1px 0;
-}
-#control div.autorun.autorun,
-#control div.jquery.autorun,
-#control div.regex.autorun {
-  border-left-width: 1px !important;
-  -webkit-border-top-left-radius: 4px !important;
-  -webkit-border-bottom-left-radius: 4px !important;
-}
-#control div.autorun.regex,
-#control div.jquery.regex,
-#control div.regex.regex {
-  border-right-width: 1px !important;
-  -webkit-border-top-right-radius: 4px !important;
-  -webkit-border-bottom-right-radius: 4px !important;
-}
-#control div.inject {
-  border-top-width: 1px;
-  width: 90px;
-  float: right;
-  text-align: center;
-  color: #59595B;
-  font-weight: bold;
-  text-shadow: #EDF6E5 1px 1px 0;
-  -webkit-border-radius: 4px;
-  border: 1px solid #B2C0A6;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e0efd3), color-stop(1, #eff8e6));
-}
-#control div.inject:hover {
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, #e0efd3), color-stop(0, #eff8e6));
-}
-#editor {
+#editor-wrapper #editor {
   position: absolute;
   top: 0;
   right: 0;
@@ -210,9 +235,4 @@ textarea {
   background-color: #FFF;
   margin-bottom: 5px;
   -webkit-border-radius: 4px;
-}
-#editor-wrapper {
-  position: relative;
-  height: 300px;
-  width: 450px;
 }
