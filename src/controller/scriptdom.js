@@ -1,28 +1,34 @@
-function ScriptDom(dom) {
+function ScriptDom() {
 
     /** @type jQuery */
-    this.dom = dom || this.init();
+    var jQueryDom;
+
+    /**
+     * Todo: Add constructor.
+     */
 
     /**
      * Create a script dom by cloning the sample dom.
+     * @return {ScriptDom}
      */
-    this.prototype.init = function () {
+    ScriptDom.prototype.init = function () {
         /** @type jQuery */
         var element = $("div.row.sample").clone();
         element.removeClass("sample");
         element.find("div.save").click(onSaveClickedListener);
         element.find("div.delete").click(onDeleteClickedListener);
         element.hide().appendTo("#content").slideDown('slow');
-        this.dom = element;
+        jQueryDom = element;
+        return this;
     }
 
     /**
      * Update the script dom with ScriptInfo data.
      * @param info {ScriptInfo}
      */
-    this.prototype.setScriptInfo = function (info) {
+    ScriptDom.prototype.setScriptInfo = function (info) {
         /** @type jQuery */
-        var element = this.dom;
+        var element = jQueryDom;
         element.attr("data-id", info.id);
         element.find("div.url>input")
             .val(info.url)
@@ -52,9 +58,9 @@ function ScriptDom(dom) {
      * @param dom {HTMLElement}
      * @return {ScriptInfo}
      */
-    this.prototype.getScriptInfo = function () {
+    ScriptDom.prototype.getScriptInfo = function () {
         /** @type jQuery */
-        var element = this.dom;
+        var element = jQueryDom;
         /** @type ScriptInfo */
         var info = new ScriptInfo();
         info.id = element.attr("data-id");
