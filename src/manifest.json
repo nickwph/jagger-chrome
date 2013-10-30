@@ -3,7 +3,7 @@
 
     "name": "Jaeger",
     "version": "4.0.0",
-    "description": "Let's hijack web pages!",
+    "description": "Inject Javascripts to Any Websites.",
     "icons": {
         "16": "image/icon.png",
         "48": "image/icon.png",
