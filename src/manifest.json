@@ -5,9 +5,9 @@
     "manifest_version": 2,
 
     "icons": {
-        "16": "static/icon.png",
-        "48": "static/icon.png",
-        "128": "static/icon.png"
+        "16": "image/icon.png",
+        "48": "image/icon.png",
+        "128": "image/icon.png"
     },
 
     "background": {
@@ -22,7 +22,7 @@
 //        "popup": "popup.html"
 //    },
     "browser_action": {
-        "default_icon": "static/icon.png",
+        "default_icon": "image/icon.png",
 //        "default_icon": {                    // optional
 //            "19": "images/icon19.png",           // optional
 //            "38": "images/icon38.png"            // optional
