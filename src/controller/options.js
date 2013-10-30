@@ -1,74 +1,61 @@
+/**
+ * Background page.
+ * @type {*}
+ */
 var background = chrome.extension.getBackgroundPage();
 
-function create(tag) {
-    return $(document.createElement(tag))
-}
+/**
+ * Listeners for buttons.
+ */
+$("#content").change(onContentChange);
+$("div.add").click(onAddButtonClickedListener);
+$("div.delete-all").click(onDeleteAllClickedListener);
 
+
+/**
+ * Load all the scripts from database to the table.
+ */
 background.database.getAllScripts(function (rows) {
+    var content = $("#content");
     for (var i = 0; i < rows.length; i++) {
         var data = rows.item(i);
-        var element = $("div.row.sample").clone().removeClass("sample").attr("data-id", data.id);
-        element.find("div.save").click(updateRecord);
-        element.find("div.delete").click(deleteRecord);
-
-        element.find("div.url>input")
-            .val(data.url)
-            .parent().find("label")
-            .addClass(data.url != "" ? "hasome" : "")
-            .removeClass(data.url == "" ? "hasome" : "");
-        element.find("div.description>input")
-            .val(data.description)
-            .parent().find("label")
-            .addClass(data.description != "" ? "hasome" : "")
-            .removeClass(data.description == "" ? "hasome" : "");
-        element.find("div.script>textarea")
-            .val(data.script)
-            .parent().find("label")
-            .addClass(data.script != "" ? "hasome" : "")
-            .removeClass(data.script == "" ? "hasome" : "");
-        element.find("div.autorun>input")
-            .attr('checked', data.autorun == "true" ? true : false);
-        element.find("div.jquery>input")
-            .attr('checked', data.jquery == "true" ? true : false);
-        element.find("div.regex>input")
-            .attr('checked', data.regex == "true" ? true : false);
-
-        $("#content").append(element);
+        var dom = new ScriptDom().init();
+        dom.setScriptInfo(data);
     }
-    $("#content").trigger('change');
+    onContentChange();
 });
 
-$("#content").change(function (e) {
-    if ($(".row").length <= 1) {
-        $("#content").addClass("empty");
-    }
-    else {
-        $("#content").removeClass("empty");
-    }
-});
+/**
+ * Default script info.
+ * @type {ScriptInfo}
+ */
+var defaultSciptInfo = new ScriptInfo();
+defaultSciptInfo.url = 'http://nicholasworkshop.com';
+defaultSciptInfo.title = 'Nicholas Workshop';
+defaultSciptInfo.script = 'alert("JavaScript Injected!")';
 
-$("div.add").click(function () {
-    var element = $("div.row.sample").clone().removeClass("sample");
-    background.database.addScript("http://nicholasworkshop.com/", "Nicholas Workshop", "alert('JavaScript Injected!');", true, true, false);
-    background.database.getLastInsertId(function (id) {
-        element.attr("data-id", id)
-    });
-    element.find("div.save").click(updateRecord);
-    element.find("div.delete").click(deleteRecord);
-    element.hide().appendTo("#content").slideDown('slow');
-    $("#content").trigger('change');
-});
+// ==============================================================
 
-$("div.delete-all").click(function () {
-    background.database.dropTable();
-    background.database.createTable();
-    $("div.row:not(.sample)").slideUp('slow', function () {
-        $(this).remove();
-        $("#content").trigger('change');
-    });
-});
+/**
+ * Show empty message when there is no scripts displayed.
+ */
+function onContentChange() {
+    if ($(".row").length <= 1) $("#content").addClass("empty");
+    else $("#content").removeClass("empty");
+}
 
-function updateRecord() {
+/**
+ * Handler when add-button is clicked.
+ */
+function onAddButtonClickedListener() {
+    var dom = new ScriptDom().init();
+    dom.setScriptInfo(defaultSciptInfo);
+}
+
+/**
+ * Handler when save-button is clicked.
+ */
+function onSaveClickedListener() {
     var element = $(this).parent().parent();
     background.database.updateScript(element.attr("data-id"),
         element.find("div.url>input").val(),
@@ -80,11 +67,26 @@ function updateRecord() {
     );
 }
 
-function deleteRecord() {
+/**
+ * Handler when delete-button is clicked.
+ */
+function onDeleteClickedListener() {
     var element = $(this).parent().parent();
     background.database.deleteScript(element.attr("data-id"));
     element.slideUp('slow', function () {
         $(this).remove();
-        $("#content").trigger('change');
+        onContentChange();
+    });
+}
+
+/**
+ * Handler when delete-all-button is clicked.
+ */
+function onDeleteAllClickedListener() {
+    background.database.dropTable();
+    background.database.createTable();
+    $("div.row:not(.sample)").slideUp('slow', function () {
+        $(this).remove();
+        onContentChange();
     });
 }
