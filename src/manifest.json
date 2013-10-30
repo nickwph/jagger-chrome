@@ -1,34 +1,26 @@
 {
+    "manifest_version": 2,
+
     "name": "Jaeger",
     "version": "4.0.0",
     "description": "Let's hijack web pages!",
-    "manifest_version": 2,
-
     "icons": {
         "16": "image/icon.png",
         "48": "image/icon.png",
         "128": "image/icon.png"
     },
 
+
     "background": {
         "page": "view/background.html"
     },
 
-//    "background_page": "background.html",
     "options_page": "view/options.html",
 
-//    "browser_action": {
-//        "default_icon": "icon.png",
-//        "popup": "popup.html"
-//    },
     "browser_action": {
         "default_icon": "image/icon.png",
-//        "default_icon": {                    // optional
-//            "19": "images/icon19.png",           // optional
-//            "38": "images/icon38.png"            // optional
-//        },
-        "default_title": "Google Mail",      // optional; shown in tooltip
-        "default_popup": "view/popup.html"        // optional
+        "default_title": "JsInjector",
+        "default_popup": "view/popup.html"
     },
 
     "permissions": [
