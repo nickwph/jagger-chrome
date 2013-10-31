@@ -1,8 +1,8 @@
 /**
- * Background page.
- * @type {*}
+ * Database connection.
+ * @type {DbConnector}
  */
-var background = chrome.extension.getBackgroundPage();
+var database = chrome.extension.getBackgroundPage().dbConnector;
 
 /**
  * Listeners for buttons.
@@ -11,12 +11,12 @@ $("#content").change(onContentChange);
 $("div.add").click(onAddButtonClickedListener);
 $("div.delete-all").click(onDeleteAllClickedListener);
 
-
 /**
  * Load all the scripts from database to the table.
  */
-background.database.getAllScripts(function (rows) {
+database.getAllScriptInfo(function (rows) {
     var content = $("#content");
+    console.log(rows);
     for (var i = 0; i < rows.length; i++) {
         var data = rows.item(i);
         var dom = new ScriptDom().init();
