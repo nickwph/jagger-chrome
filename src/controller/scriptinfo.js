@@ -1,7 +1,13 @@
 function ScriptInfo() {
 
+    /** @type string */
+    this._id = undefined;
+
+    /** @type string */
+    this._rev = undefined;
+
     /** @type int */
-    this.id = -1;
+    this.id = undefined;
 
     /** @type string */
     this.url = '';
