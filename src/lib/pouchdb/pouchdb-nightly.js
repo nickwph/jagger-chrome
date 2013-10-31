@@ -599,7 +599,7 @@ var ajax = function ajax(options, callback) {
       xhr.responseType = 'arraybuffer';
     }
 
-    function createCookie(name,value,days) {
+     var createCookie = function (name,value,days) {
       if (days) {
 	var date = new Date();
 	date.setTime(date.getTime()+(days*24*60*60*1000));
