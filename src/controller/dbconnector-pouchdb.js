@@ -115,16 +115,17 @@ function DbConnector() {
 
     /**
      * Retrieve all scripts.
-     * @param info
      * @param callback
      */
-    DbConnector.prototype.getAllScriptInfo = function (info, callback) {
+    DbConnector.prototype.getAllScriptInfo = function (callback) {
         db.allDocs({include_docs: true}, function (err, response) {
             if (!err) {
                 console.log(response);
                 var scripts = [];
                 for (var row in response.rows) {
-                    scripts.push(row.doc);
+//                    var info = new ScriptInfo().parse(row.doc)
+//                    scripts.push(info);
+                    scripts.push(row);
                 }
                 if (callback) callback(scripts);
             }
