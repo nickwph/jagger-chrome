@@ -1,109 +1,197 @@
-var database = {};
+function DbConnector() {
 
-database.db = null;
+    /** @type string */
+    var db_name = 'scripts';
 
-database.open = function() {
-    database.db = openDatabase("JavaScriptInjector", 
-                               "1.0", 
-                               "JavaScript Injector Database", 
-                               5 * 1024 * 1024); // 5MB
-}
+    /** @type {Database} */
+    var db = init();
 
-database.createTable = function() {
-    database.db.transaction(function(tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS Scripts (" +
-                      "id INTEGER PRIMARY KEY ASC, "+
-                      "url TEXT, " + 
-					  "description TEXT, " + 
-                      "script TEXT, " + 
-                      "autorun BOOLEAN, " + 
-                      "jquery BOOLEAN," +
-					  "regex BOOLEAN)", 
-                      []);
-    });
-}
+    /**
+     * Initialize the database
+     */
+    function init() {
+        var new_db = openDatabase(db_name, '1.0', '', 5 * 1024 * 1024); // 5MB
+        new_db.transaction(function (tx) {
+            tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS Scripts (" +
+                    "id INTEGER PRIMARY KEY ASC, " +
+                    "url TEXT, " +
+                    "description TEXT, " +
+                    "script TEXT, " +
+                    "autorun BOOLEAN, " +
+                    "jquery BOOLEAN," +
+                    "regex BOOLEAN)");
+        });
+        return new_db;
+    }
 
-database.dropTable = function() {
-    database.db.transaction(function(tx) {
-        tx.executeSql("DROP TABLE Scripts");
-    });
-}
+    /**
+     * Reset the database.
+     */
+    DbConnector.prototype.reset = function () {
+        db.transaction(function (tx) {
+            tx.executeSql("DROP TABLE Scripts");
+        });
+        db = init();
+    }
 
-database.addScript = function(url, description, script, autorun, jquery, regex) {
-    database.db.transaction(function(tx){
-        tx.executeSql("INSERT INTO Scripts " +
-                      "(url, description, script, autorun, jquery, regex) " + 
-                      "VALUES (?,?,?,?,?,?)",
-                      [url, description, script, autorun, jquery, regex],
-                      database.onSuccess,
-                      database.onError);
-    });
-}
+    /**
+     * Check if it's the first run.
+     * dbConnector.isVersionFirstRun(function(found){console.log(found)})
+     * @param callback {function (found:boolean)}
+     */
+    DbConnector.prototype.isVersionFirstRun = function (callback) {
+        // connection database
+        var infoDb = new PouchDB('info');
+        // get info from database
+        infoDb.get('initialized', function (err, doc) {
+            if (err) callback(true);
+            else callback(false);
+        });
+    }
 
-database.getLastInsertId = function(callback) {
-    database.db.transaction(function(tx) {
-        tx.executeSql("SELECT MAX(id) AS id FROM scripts", 
-                      [], 
-                      function(tx, rs) { 
-                          callback(rs.rows.item(0).id); 
-                          console.log(rs.rows.item(0).id);
-                      },
-                      database.onError);
-    });
-}
+    /**
+     * Set first-run value.
+     * dbConnector.setVersionFirstRun()
+     * @param bool {boolean}
+     */
+    DbConnector.prototype.setVersionFirstRun = function (bool) {
+        // boolean in js has undefined state
+        if (bool == undefined) {
+            return console.log('Value not provided.');
+        }
+        // connection database
+        var infoDb = new PouchDB('info');
+        // get doc from database
+        infoDb.get('initialized', function (err, doc) {
+            // set to true, but not found in database
+            if (bool && err) {
+                infoDb.put({_id: 'initialized'}, function (err, response) {
+                });
+            }
+            // set to false, and found in database
+            else if (!bool && !err) {
+                infoDb.remove(doc, function (err, response) {
+                });
+            }
+            // i don't think there is any other case.
+            else {
+                console.log('Unexpected error!');
+            }
+        });
+    }
 
-database.updateScript = function(id, url, description, script, autorun, jquery, regex) {
-    database.db.transaction(function(tx){
-        tx.executeSql("UPDATE Scripts SET " + 
-                      "url = ?, " +
-                      "description = ?, " +
-                      "script = ?, " +
-                      "autorun = ?, " +
-                      "jquery = ?, " +
-                      "regex = ? " +
-                      "WHERE id = ?",
-                      [url, description, script, autorun, jquery, regex, id],
-                      database.onSuccess,
-                      database.onError);
-    });
-}
 
-database.getAllScripts = function(callback) {
-    database.db.transaction(function(tx) {
-        tx.executeSql("SELECT * FROM scripts", 
-                      [], 
-                      function(tx, rs) { callback(rs.rows) },
-                      database.onError);
-    });
-}
+    /**
+     * Add a script to database.
+     * @param info {ScriptInfo}
+     * @param callback {function (id:string, rev:string)}
+     */
+    DbConnector.prototype.addScriptInfo = function (info, callback) {
+        db.transaction(function (tx) {
+            tx.executeSql(
+                "INSERT INTO Scripts " +
+                    "(url, description, script, autorun, jquery, regex) " +
+                    "VALUES (?,?,?,?,?,?)",
+                [info.url, info.description, info.script, info.autorun, info.jquery, info.regex],
+                function success() {
+                    database.db.transaction(function (tx) {
+                        tx.executeSql("SELECT MAX(id) AS id FROM scripts",
+                            [],
+                            function (tx, rs) {
+                                callback(rs.rows.item(0).id);
+                                console.log(rs.rows.item(0).id);
+                            },
+                            database.onError);
+                    });
+                },
+                function failed() {
 
-database.deleteScript = function(id) {
-    database.db.transaction(function(tx){
-        tx.executeSql("DELETE FROM scripts WHERE id=?", 
-                      [id],
-                      database.onSuccess,
-                      database.onError);
-    });
-}
+                });
+        });
 
-database.getMatchedScript = function(url, callback) {
-    database.getAllScripts(function(rows) {
-        for (var i=0; i<rows.length; i++) {
-			if ((rows.item(i).regex=="true" && url.match(rows.item(i).url)) || (rows.item(i).regex=="false" && url==rows.item(i).url)) {
-			//if (url.match(rows.item(i).url)) {
-				callback(rows.item(i));
-                break; // Get only the first one
-			}
-		}
-    });
-}
+    }
 
-database.onSuccess = function(tx, r) {
-	//console.log("database.onSuccess");
-    //database.getAllTodoItems(loadTodoItems);
-}
+    /**
+     * Update a script to database.
+     * @param info {ScriptInfo}
+     * @param callback {function (ok:boolean, id:string, rev:string)}
+     */
+    DbConnector.prototype.updateScriptInfo = function (info, callback) {
+        db.transaction(function (tx) {
+            tx.executeSql(
+                "UPDATE Scripts SET " +
+                    "url = ?, " +
+                    "description = ?, " +
+                    "script = ?, " +
+                    "autorun = ?, " +
+                    "jquery = ?, " +
+                    "regex = ? " +
+                    "WHERE id = ?",
+                [info.url, info.description, info.script, info.autorun, info.jquery, info.regex, info.id],
+                function success() {
 
-database.onError = function(tx, e) {
-	console.log("database.onError: " + e.message);
-    alert("There has been an error: " + e.message);
+                },
+                function failed() {
+
+                });
+        });
+    }
+
+    /**
+     * Retrieve a script from database.
+     * @param id {string}
+     * @param callback {function(object)}
+     */
+    DbConnector.prototype.getScriptInfo = function (id, callback) {
+        // TODO
+    }
+
+
+    /**
+     * Retrieve all scripts.
+     * @param callback
+     */
+    DbConnector.prototype.getAllScriptInfo = function (callback) {
+        db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM scripts", null,
+                function sucess(tx, rs) {
+                    callback(rs.rows)
+                },
+                function failed() {
+                });
+        });
+    }
+
+    /**
+     *
+     * @param info
+     * @param callback {function (okay:boolean, data:object)}
+     */
+    DbConnector.prototype.deleteScriptInfo = function (id, callback) {
+        db.transaction(function (tx) {
+            tx.executeSql("DELETE FROM scripts WHERE id=?", [id],
+                function success() {
+                },
+                function failed() {
+                });
+        });
+
+    }
+
+    /**
+     * Get url that matches the input one.
+     * @param urlToMatch
+     */
+    DbConnector.prototype.matchScriptInfo = function (urlToMatch) {
+        self.getAllScripts(function (rows) {
+            for (var i = 0; i < rows.length; i++) {
+                if ((rows.item(i).regex == "true" && url.match(rows.item(i).url)) || (rows.item(i).regex == "false" && url == rows.item(i).url)) {
+                    //if (url.match(rows.item(i).url)) {
+                    callback(rows.item(i));
+                    break; // Get only the first one
+                }
+            }
+        });
+    }
 }
