@@ -95,7 +95,7 @@ function DbConnector() {
                     "VALUES (?,?,?,?,?,?)",
                 [info.url, info.description, info.script, info.autorun, info.jquery, info.regex],
                 function success() {
-                    database.db.transaction(function (tx) {
+                    db.transaction(function (tx) {
                         tx.executeSql("SELECT MAX(id) AS id FROM scripts",
                             [],
                             function (tx, rs) {
