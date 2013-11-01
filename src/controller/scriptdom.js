@@ -7,6 +7,16 @@ function ScriptDom() {
      * Todo: Add constructor.
      */
 
+
+    /**
+     *
+     * @param dom {HTMLElement}
+     */
+    ScriptDom.prototype.parse = function (dom) {
+        jQueryDom = $(dom);
+        return this;
+    }
+
     /**
      * Create a script dom by cloning the sample dom.
      * @return {ScriptDom}
