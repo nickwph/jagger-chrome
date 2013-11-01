@@ -16,7 +16,7 @@ $("div.delete-all").click(onDeleteAllClickedListener);
  */
 database.getAllScriptInfo(function (rows) {
     var content = $("#content");
-    console.log(rows);
+//    console.log(rows);
     for (var i = 0; i < rows.length; i++) {
         var data = rows.item(i);
         var dom = new ScriptDom().init();
@@ -57,14 +57,9 @@ function onAddButtonClickedListener() {
  */
 function onSaveClickedListener() {
     var element = $(this).parent().parent();
-    background.database.updateScript(element.attr("data-id"),
-        element.find("div.url>input").val(),
-        element.find("div.description>input").val(),
-        element.find("div.script>textarea").val(),
-        element.find("div.autorun>input").attr('checked') ? true : false,
-        element.find("div.jquery>input").attr('checked') ? true : false,
-        element.find("div.regex>input").attr('checked') ? true : false
-    );
+    var dom = new ScriptDom().parse(element);
+    var info = dom.getScriptInfo();
+    database.updateScriptInfo(info);
 }
 
 /**
@@ -72,7 +67,7 @@ function onSaveClickedListener() {
  */
 function onDeleteClickedListener() {
     var element = $(this).parent().parent();
-    background.database.deleteScript(element.attr("data-id"));
+    database.deleteScript(element.attr("data-id"));
     element.slideUp('slow', function () {
         $(this).remove();
         onContentChange();
