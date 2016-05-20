@@ -1,11 +1,11 @@
 {
-  "name": "jsinjector-chrome",
+  "name": "jagger-chrome",
   "version": "1.0.0",
   "description": "## Open Source Libraries",
   "main": "index.js",
   "scripts": {
-    "build": "cp -r node_modules/WebpackChromeExtension/dev-env . && cross-env NODE_ENV=production babel-node ./dev-env/build.js",
-    "dev": "cp -r node_modules/WebpackChromeExtension/dev-env . && cross-env NODE_ENV=development babel-node ./dev-env/dev.js",
+    "build": "./prebuild.sh && cross-env NODE_ENV=production babel-node ./dev-env/build.js",
+    "dev": "./prebuild.sh && cross-env NODE_ENV=development babel-node ./dev-env/dev.js",
     "start": "npm run dev"
   },
   "repository": {
@@ -19,7 +19,14 @@
   },
   "homepage": "https://github.com/nickwph/jsinjector-chrome#r3eadme",
   "dependencies": {
-    "WebpackChromeExtension": "git+https://github.com/schovi/webpack-chrome-extension.git"
+    "WebpackChromeExtension": "git+https://github.com/schovi/webpack-chrome-extension.git",
+    "bootstrap": "^3.3.6",
+    "codemirror": "^5.14.2",
+    "lodash.debounce": "^4.0.6",
+    "react": "^15.0.2",
+    "react-bootstrap": "^0.29.4",
+    "react-codemirror": "^0.2.6",
+    "react-dom": "^15.0.2"
   },
   "devDependencies": {
     "babel-cli": "6.4.5",
@@ -37,6 +44,8 @@
     "fs-extra": "0.26.5",
     "json-loader": "0.5.4",
     "lodash": "4.1.0",
+    "node-sass": "^3.7.0",
+    "sass-loader": "^3.2.0",
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",
     "webpack": "1.12.2",

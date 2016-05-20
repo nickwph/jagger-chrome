@@ -1,6 +1,7 @@
 {
   "manifest_version": 2,
   "homepage_url": "https://github.com/schovi/webpack-chrome-extension",
+  "options_page": "popup/index.html",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -11,7 +12,7 @@
     "persistent": true,
     "scripts": ["background/index.js"]
   },
-  "page_action": {
+  "browser_action": {
     "default_title": "Webpack chrome extension popup action",
     "default_popup": "popup/index.html"
   },

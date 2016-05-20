@@ -1,0 +1,45 @@
+.input-group-vertical {
+  margin-bottom: 10px;
+
+  .form-control {
+    border-radius: 0;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-group:not(:last-child) .form-control:not(:focus) {
+    border-bottom-color: transparent;
+  }
+
+  .form-group:first-child .form-control {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+
+  .form-group:last-child .form-control {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    top: -2px;
+  }
+}
+
+.container {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 480px;
+}
+
+.editor {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
