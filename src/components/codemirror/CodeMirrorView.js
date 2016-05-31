@@ -28,7 +28,7 @@ export default class CodeMirrorComponent extends React.Component {
     let textareaNode = this.refs.textarea;
     let codeMirrorInstance = this.getCodeMirrorInstance();
     this.codeMirror = codeMirrorInstance.fromTextArea(textareaNode, this.props.options);
-    this.codeMirror.on('change', this.codemirrorValueChanged);
+    this.codeMirror.on('change', this.codemirrorValueChanged.bind(this));
     this.codeMirror.on('focus', this.focusChanged.bind(this, true));
     this.codeMirror.on('blur', this.focusChanged.bind(this, false));
     this.codeMirror.setValue(this.props.defaultValue || this.props.value || '');
