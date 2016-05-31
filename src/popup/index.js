@@ -6,6 +6,15 @@ import ReactDOM from 'react-dom'
 import EditView from '../components/edit_view/EditView'
 
 import jquery from 'jquery'
+import firebase from 'firebase'
+
+const database = firebase.initializeApp({
+  apiKey: "AIzaSyAWrJsws7eJnGppqqwdnJ1d66zdWgi-ZaA",
+  authDomain: "jaguar-490dc.firebaseapp.com",
+  databaseURL: "https://jaguar-490dc.firebaseio.com",
+  storageBucket: "jaguar-490dc.appspot.com",
+}).database();
+
 
 class Container extends React.Component {
 
@@ -29,6 +38,7 @@ class Container extends React.Component {
           console.log("executeScript - file", result);
           chrome.tabs.executeScript(tab.id, {code: script}, (result) => {
             console.log("executeScript - script", result);
+            database.ref().child('scripts').push().set({script: script});
           });
         });
       });
