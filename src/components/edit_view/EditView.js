@@ -9,10 +9,21 @@ import './EditView.scss'
 import React from 'react'
 import CodeMirror from '../codemirror/CodeMirrorView'
 
-export default  class EditView extends React.Component {
+export default class EditView extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.handleSubmit = this.handleSubmit.bind(this); // bind this to method
+  }
+
+  handleSubmit() {
+    this.props.onSubmit();
+  }
+
   render() {
     return (
-      <form>
+      <div>
         <fieldset className="input-group-vertical">
           <div className="form-group">
             <input type="text" className="form-control" placeholder="Title"/>
@@ -25,11 +36,13 @@ export default  class EditView extends React.Component {
           </div>
         </fieldset>
         <div className="form-group">
-          <CodeMirror className="editor" value="function(){ console.log('hello') }" options={{lineNumbers: false}}/>
+          <CodeMirror className="editor" ref="editor"
+                      value="alert('hello world')"
+                      options={{lineNumbers: false}}/>
         </div>
         <button type="reset" className="btn btn-link">Cancel</button>
-        <button type="submit" className="btn btn-primary">Inject</button>
-      </form>
+        <button className="btn btn-primary" onClick={this.handleSubmit}>Inject</button>
+      </div>
     );
   }
 }
