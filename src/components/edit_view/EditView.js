@@ -26,18 +26,29 @@ export default class EditView extends React.Component {
       <div>
         <fieldset className="input-group-vertical">
           <div className="form-group">
-            <input type="text" className="form-control" placeholder="Title"/>
+            <input type="text" ref="title"
+                   className="form-control"
+                   placeholder="Title"
+                   value="sample title"/>
           </div>
           <div className="form-group">
-            <input type="text" className="form-control" placeholder="Url"/>
+            <input type="text" ref="url"
+                   className="form-control"
+                   placeholder="Url"
+                   value="sample url"/>
           </div>
           <div className="form-group">
-            <textarea className="form-control" rows="1" placeholder="Description"/>
+            <textarea ref="description"
+                      rows="1"
+                      className="form-control"
+                      placeholder="Description"
+                      value="sample decription"/>
           </div>
         </fieldset>
         <div className="form-group">
-          <CodeMirror className="editor" ref="editor"
-                      value="alert('hello world')"
+          <CodeMirror className="editor"
+                      ref="editor"
+                      value="console.log('hello world')"
                       options={{lineNumbers: false}}/>
         </div>
         <button type="reset" className="btn btn-link">Cancel</button>

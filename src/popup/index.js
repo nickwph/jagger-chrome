@@ -8,13 +8,29 @@ import EditView from '../components/edit_view/EditView'
 import jquery from 'jquery'
 import firebase from 'firebase'
 
-const database = firebase.initializeApp({
+firebase.initializeApp({
   apiKey: "AIzaSyAWrJsws7eJnGppqqwdnJ1d66zdWgi-ZaA",
   authDomain: "jaguar-490dc.firebaseapp.com",
   databaseURL: "https://jaguar-490dc.firebaseio.com",
   storageBucket: "jaguar-490dc.appspot.com",
-}).database();
+});
 
+const database = firebase.database();
+const auth = firebase.auth();
+const reference = database.ref();
+
+let scriptRef;
+
+auth.onAuthStateChanged(user => {
+  console.log("onAuthStateChanged", user);
+  if (user === null) {
+    auth.signInAnonymously().then((result) => {
+      console.log("signInAnonymously", result);
+    }).catch(error => {
+      console.log("signInAnonymously", "error", error);
+    });
+  }
+});
 
 class Container extends React.Component {
 
@@ -25,20 +41,32 @@ class Container extends React.Component {
   }
 
   handleSubmit() {
-    console.log("got it!");
-    let script = this.refs.editView.refs.editor.codeMirror.getValue();
+    let editViewRefs = this.refs.editView.refs;
+    let url = editViewRefs.url.value;
+    let title = editViewRefs.title.value;
+    let description = editViewRefs.description.value;
+    let script = editViewRefs.editor.codeMirror.getValue();
+
+    if (scriptRef == null) {
+      scriptRef = reference.child('users/' + auth.currentUser.uid + '/scripts').push();
+      scriptRef.set({
+        created_at: new Date().getTime()
+      })
+    }
 
     chrome.tabs.getSelected(null, (tab) => {
-      console.log("getSelected");
-      console.log(tab);
-      console.log(script);
       jquery.get('https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', (data, textStatus, jqXHR) => {
-        console.log("jquery ");
         chrome.tabs.executeScript(tab.id, {code: data}, (result) => {
           console.log("executeScript - file", result);
           chrome.tabs.executeScript(tab.id, {code: script}, (result) => {
             console.log("executeScript - script", result);
-            database.ref().child('scripts').push().set({script: script});
+            scriptRef.set({
+              title: title,
+              url: url,
+              description: description,
+              script: script,
+              modified_at: new Date().getTime(),
+            });
           });
         });
       });
