@@ -2,7 +2,7 @@
  * Created by nickwph on 5/16/16.
  */
 
-import '../../../prebuilds/codemirror/codemirror.css'
+import '../../prebuilds/codemirror/codemirror.css'
 import './CodeMirrorView.scss'
 
 import React from 'react'

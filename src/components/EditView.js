@@ -2,12 +2,12 @@
  * Created by nickwph on 5/18/16.
  */
 
-import '../../../prebuilds/bootstrap/css/bootstrap.min.css'
-import '../../../prebuilds/bootstrap/css/bootstrap-theme.min.css'
+import '../../prebuilds/bootstrap/css/bootstrap.min.css'
+import '../../prebuilds/bootstrap/css/bootstrap-theme.min.css'
 import './EditView.scss'
 
 import React from 'react'
-import CodeMirror from '../codemirror/CodeMirrorView'
+import CodeMirror from './CodeMirrorView'
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 import Button from 'react-bootstrap/lib/Button'
@@ -15,7 +15,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
-import VerticalInputGroup from '../VerticalInputGroup'
+import VerticalInputGroup from './VerticalInputGroup'
 
 export default class EditView extends React.Component {
 
