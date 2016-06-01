@@ -15,6 +15,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
+import Panel from 'react-bootstrap/lib/Panel'
 import VerticalInputGroup from './VerticalInputGroup'
 
 export default class EditView extends React.Component {
@@ -40,25 +41,24 @@ export default class EditView extends React.Component {
             <FormControl type="text" ref="url" placeholder="Url" value="sample url"/>
           </FormGroup>
           <FormGroup>
-            <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description"
-                         value="sample decription"/>
+            <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description" value="sample"/>
           </FormGroup>
         </VerticalInputGroup>
-        <FormGroup>
-          <CodeMirror className="editor" ref="editor" value="console.log('hello world')"
-                      options={{lineNumbers: false}}/>
-        </FormGroup>
-        <ButtonToolbar>
+        <Panel header='Javascript'>
+          <CodeMirror ref="editor" options={{lineNumbers: false}} value="console.log('hello world')"/>
+        </Panel>
+        <ButtonToolbar className="pull-right">
           <ButtonGroup>
-            <Button>1</Button>
-            <Button>2</Button>
-            <DropdownButton title="Dropdown" id="bg-nested-dropdown">
+            <DropdownButton dropup bsStyle="primary" title="Add New">
               <MenuItem eventKey="1">Dropdown link</MenuItem>
               <MenuItem eventKey="2">Dropdown link</MenuItem>
+              <MenuItem eventKey="3">Dropdown link</MenuItem>
+              <MenuItem divider/>
+              <MenuItem eventKey="4">Dropdown link</MenuItem>
             </DropdownButton>
           </ButtonGroup>
           <Button>Save</Button>
-          <Button onClick={this.handleSubmit}>Submit</Button>
+          <Button onClick={this.handleSubmit}>Apply</Button>
         </ButtonToolbar>
       </div>
     );
