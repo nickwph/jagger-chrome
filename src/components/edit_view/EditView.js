@@ -8,6 +8,13 @@ import './EditView.scss'
 
 import React from 'react'
 import CodeMirror from '../codemirror/CodeMirrorView'
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup'
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
+import Button from 'react-bootstrap/lib/Button'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
 
 export default class EditView extends React.Component {
 
@@ -24,35 +31,34 @@ export default class EditView extends React.Component {
   render() {
     return (
       <div>
-        <fieldset className="input-group-vertical">
-          <div className="form-group">
-            <input type="text" ref="title"
-                   className="form-control"
-                   placeholder="Title"
-                   value="sample title"/>
-          </div>
-          <div className="form-group">
-            <input type="text" ref="url"
-                   className="form-control"
-                   placeholder="Url"
-                   value="sample url"/>
-          </div>
-          <div className="form-group">
-            <textarea ref="description"
-                      rows="1"
-                      className="form-control"
-                      placeholder="Description"
-                      value="sample decription"/>
-          </div>
-        </fieldset>
-        <div className="form-group">
-          <CodeMirror className="editor"
-                      ref="editor"
-                      value="console.log('hello world')"
-                      options={{lineNumbers: false}}/>
+        <div className="input-group-vertical">
+          <FormGroup>
+            <FormControl type="text" ref="title" placeholder="Title" value="sample title 2"/>
+          </FormGroup>
+          <FormGroup>
+            <FormControl type="text" ref="url" placeholder="Url" value="sample url"/>
+          </FormGroup>
+          <FormGroup>
+            <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description"
+                         value="sample decription"/>
+          </FormGroup>
         </div>
-        <button type="reset" className="btn btn-link">Cancel</button>
-        <button className="btn btn-primary" onClick={this.handleSubmit}>Inject</button>
+        <FormGroup>
+          <CodeMirror className="editor" ref="editor" value="console.log('hello world')"
+                      options={{lineNumbers: false}}/>
+        </FormGroup>
+        <ButtonToolbar>
+          <ButtonGroup>
+            <Button>1</Button>
+            <Button>2</Button>
+            <DropdownButton title="Dropdown" id="bg-nested-dropdown">
+              <MenuItem eventKey="1">Dropdown link</MenuItem>
+              <MenuItem eventKey="2">Dropdown link</MenuItem>
+            </DropdownButton>
+          </ButtonGroup>
+          <Button>Save</Button>
+          <Button onClick={this.handleSubmit}>Submit</Button>
+        </ButtonToolbar>
       </div>
     );
   }
