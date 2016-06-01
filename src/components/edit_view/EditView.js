@@ -15,6 +15,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
+import VerticalInputGroup from '../VerticalInputGroup'
 
 export default class EditView extends React.Component {
 
@@ -31,7 +32,7 @@ export default class EditView extends React.Component {
   render() {
     return (
       <div>
-        <div className="input-group-vertical">
+        <VerticalInputGroup>
           <FormGroup>
             <FormControl type="text" ref="title" placeholder="Title" value="sample title 2"/>
           </FormGroup>
@@ -42,7 +43,7 @@ export default class EditView extends React.Component {
             <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description"
                          value="sample decription"/>
           </FormGroup>
-        </div>
+        </VerticalInputGroup>
         <FormGroup>
           <CodeMirror className="editor" ref="editor" value="console.log('hello world')"
                       options={{lineNumbers: false}}/>
