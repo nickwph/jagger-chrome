@@ -9,6 +9,7 @@ import React from 'react'
 import className from 'classnames'
 import debounce from 'lodash.debounce'
 import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/css/css'
 
 export default class CodeMirrorComponent extends React.Component {
 
@@ -97,12 +98,15 @@ export default class CodeMirrorComponent extends React.Component {
 }
 
 CodeMirrorComponent.propTypes = {
+  // listeners
   onChange: React.PropTypes.func,
   onFocusChange: React.PropTypes.func,
   onScroll: React.PropTypes.func,
+  // options
   options: React.PropTypes.object,
   path: React.PropTypes.string,
   value: React.PropTypes.string,
   className: React.PropTypes.any,
+  // instance
   codeMirrorInstance: React.PropTypes.object,
 };
