@@ -21,6 +21,7 @@
   "dependencies": {
     "WebpackChromeExtension": "git+https://github.com/schovi/webpack-chrome-extension.git",
     "bootstrap": "^3.3.6",
+    "bootstrap-material-design": "^0.5.9",
     "codemirror": "^5.14.2",
     "firebase": "^3.0.3",
     "jquery": "^2.2.4",
@@ -28,7 +29,8 @@
     "react": "^15.0.2",
     "react-bootstrap": "^0.29.4",
     "react-codemirror": "^0.2.6",
-    "react-dom": "^15.0.2"
+    "react-dom": "^15.0.2",
+    "react-polymer": "^2.0.2"
   },
   "devDependencies": {
     "babel-cli": "6.4.5",

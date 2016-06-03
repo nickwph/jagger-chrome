@@ -6,8 +6,8 @@ cp -r node_modules/WebpackChromeExtension/dev-env .
 # fix csp
 sed -i '' "s/localhost:3001/localhost:3001 https:\/\/cdn.firebase.com https:\/\/*.firebaseio.com/g" dev-env/manifest/processor/csp.js
 
-# enable scss and bind jquery
-sed -i '' "s/\/\/ 'scss|sass'/'scss|sass'/g" dev-env/webpack/config.js
+# replace webpack config file.
+cp webpack.config.js dev-env/webpack/config.js
 
 # codemirror
 mkdir -p prebuilds/codemirror

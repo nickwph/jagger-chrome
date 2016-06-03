@@ -1,5 +1,7 @@
-import '../../prebuilds/bootstrap/css/bootstrap.min.css'
-import '../../prebuilds/bootstrap/css/bootstrap-theme.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-material-design/dist/css/ripples.min.css'
+import 'bootstrap-material-design/dist/css/bootstrap-material-design.css'
+
 import './index.scss'
 
 import React from 'react'

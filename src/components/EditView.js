@@ -2,8 +2,6 @@
  * Created by nickwph on 5/18/16.
  */
 
-import '../../prebuilds/bootstrap/css/bootstrap.min.css'
-import '../../prebuilds/bootstrap/css/bootstrap-theme.min.css'
 import './EditView.scss'
 
 import React from 'react'
@@ -71,13 +69,13 @@ export default class EditView extends React.Component {
       <div>
         <VerticalInputGroup>
           <FormGroup>
-            <FormControl type="text" ref="title" placeholder="Title" value="sample title 2"/>
+            <FormControl type="text" ref="title" placeholder="Title"/>
           </FormGroup>
           <FormGroup>
-            <FormControl type="text" ref="url" placeholder="Url" value="sample url"/>
+            <FormControl type="text" ref="url" placeholder="Url"/>
           </FormGroup>
           <FormGroup>
-            <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description" value="sample"/>
+            <FormControl componentClass="textarea" ref="description" rows="1" placeholder="Description"/>
           </FormGroup>
         </VerticalInputGroup>
         <PanelGroup>
@@ -98,7 +96,7 @@ export default class EditView extends React.Component {
                               value=".your-custom-class { left: 0 }"/>
                 </Panel>
               );
-            }else if (script.type === 'jsUrl') {
+            } else if (script.type === 'jsUrl') {
               return (
                 <Panel header={script.type}>
                   <CodeMirror ref="editor"
@@ -106,7 +104,7 @@ export default class EditView extends React.Component {
                               value=".your-custom-class { left: 0 }"/>
                 </Panel>
               );
-            }else if (script.type === 'css') {
+            } else if (script.type === 'css') {
               return (
                 <Panel header={script.type}>
                   <CodeMirror ref="editor"

@@ -2,14 +2,15 @@
  * Created by nickwph on 5/16/16.
  */
 
-import '../../prebuilds/codemirror/codemirror.css'
+import 'codemirror/lib/codemirror.css'
 import './CodeMirrorView.scss'
+
+import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/css/css'
 
 import React from 'react'
 import className from 'classnames'
 import debounce from 'lodash.debounce'
-import 'codemirror/mode/javascript/javascript'
-import 'codemirror/mode/css/css'
 
 export default class CodeMirrorComponent extends React.Component {
 
