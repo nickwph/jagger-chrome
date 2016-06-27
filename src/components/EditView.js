@@ -29,7 +29,9 @@ export default class EditView extends React.Component {
   }
 
   handleSave() {
-    this.setState({count: this.state.count + 1});
+    this.setState({
+      count: this.state.count + 1
+    });
   }
 
   handleSubmit() {
@@ -37,31 +39,32 @@ export default class EditView extends React.Component {
   }
 
   handleNewCss() {
-    this.state.scripts.push({
-      'type': 'css'
+    this.setState({
+      scripts: this.pushAndReturnArray(this.state.scripts, {'type': 'css'})
     });
-    this.setState({scripts: this.state.scripts});
   }
 
   handleNewCssUrl() {
-    this.state.scripts.push({
-      'type': 'cssUrl'
+    this.setState({
+      scripts: this.pushAndReturnArray(this.state.scripts, {'type': 'cssUrl'})
     });
-    this.setState({scripts: this.state.scripts});
   }
 
   handleNewJavaScript() {
-    this.state.scripts.push({
-      'type': 'js'
+    this.setState({
+      scripts: this.pushAndReturnArray(this.state.scripts, {'type': 'js'})
     });
-    this.setState({scripts: this.state.scripts});
   }
 
   handleNewJavaScriptUrl() {
-    this.state.scripts.push({
-      'type': 'jsUrl'
+    this.setState({
+      scripts: this.pushAndReturnArray(this.state.scripts, {'type': 'jsUrl'})
     });
-    this.setState({scripts: this.state.scripts});
+  }
+
+  static pushAndReturnArray(array, object) {
+    array.push(object)
+    return array
   }
 
   render() {

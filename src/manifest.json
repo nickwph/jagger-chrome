@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "homepage_url": "https://github.com/schovi/webpack-chrome-extension",
-  "options_page": "popup/index.html",
+  "options_page": "options/index.html",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -17,7 +17,7 @@
     "default_popup": "popup/index.html"
   },
   "chrome_url_overrides" : {
-    "newtab": "newtab/index.html"
+    "newtab": "options/index.html"
   },
   "permissions": [
     "tabs",

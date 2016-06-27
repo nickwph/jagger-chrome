@@ -1,7 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'bootstrap-material-design/dist/css/ripples.min.css'
-// import 'bootstrap-material-design/dist/css/bootstrap-material-design.css'
-
 import './index.scss'
 
 import React from 'react'
@@ -20,20 +17,42 @@ firebase.initializeApp({
 
 const database = firebase.database();
 const auth = firebase.auth();
-const reference = database.ref();
 
 let scriptRef;
 
-auth.onAuthStateChanged(user => {
-  console.log("onAuthStateChanged", user);
+firebase.auth().onAuthStateChanged(user => {
+  console.log("onAuthStateChanged", user)
   if (user === null) {
     auth.signInAnonymously().then((result) => {
-      console.log("signInAnonymously", result);
+      console.log("signInAnonymously", result)
+      listener()
     }).catch(error => {
-      console.log("signInAnonymously", "error", error);
-    });
+      console.log("signInAnonymously", "error", error)
+    })
+  } else {
+    console.log('user session here')
+    listener()
   }
 });
+
+function listener() {
+  let path = 'users/' + auth.currentUser.uid + '/scripts'
+  let reference = database.ref(path)
+  reference.on('value', (snapshot) => {
+    console.log("value", snapshot)
+    console.log("once_value_key", snapshot.key)
+    console.log("once_value_value", snapshot.val())
+  })
+  reference.on('child_changed', (snapshot) => {
+    console.log("child_changed", snapshot)
+  })
+  reference.on('child_added', (snapshot) => {
+    console.log("child_added", snapshot)
+  })
+  reference.on('child_removed', (snapshot) => {
+    console.log("child_removed", snapshot)
+  })
+}
 
 class Container extends React.Component {
 

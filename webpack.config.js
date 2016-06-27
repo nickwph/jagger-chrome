@@ -1,9 +1,6 @@
-import fs from "fs";
 import path from "path"
-import { execSync } from "child_process";
-import webpack from 'webpack';
-import _ from 'lodash';
-import * as Remove from '../util/remove'
+import {execSync} from "child_process"
+import webpack from 'webpack'
 import * as paths from '../paths'
 import ManifestPlugin from '../manifest/plugin'
 
@@ -17,7 +14,7 @@ var styleLoaders = {
 };
 
 function makeStyleLoaders() {
-  return Object.keys(styleLoaders).map(function(ext) {
+  return Object.keys(styleLoaders).map(function (ext) {
     // NOTE Enable autoprefixer loader
     var prefix = 'css-loader?sourceMap&root=../assets'//!autoprefixer-loader?browsers=last 2 version';
     var extLoaders = prefix + styleLoaders[ext];
@@ -49,13 +46,13 @@ function configGenerator(Manifest) {
     entry: {},
 
     // Output
-    output: (function() {
+    output: (function () {
       var output = {
         path: paths.build,
         filename: '[name].js'
       }
 
-      if(isDevelopment) {
+      if (isDevelopment) {
         output.chunkFilename = '[name]-[chunkhash].js'
         output.publicPath = 'https://localhost:3001/'
       }
@@ -64,7 +61,7 @@ function configGenerator(Manifest) {
     })(),
 
     // Plugins
-    plugins: (function() {
+    plugins: (function () {
       let plugins = [
         new webpack.optimize.OccurenceOrderPlugin(),
         new ManifestPlugin(Manifest),
@@ -77,7 +74,7 @@ function configGenerator(Manifest) {
         })
       ];
 
-      if(isDevelopment) {
+      if (isDevelopment) {
         // Development plugins for hot reload
         plugins = plugins.concat([
           // NotifyPlugin,
@@ -97,8 +94,8 @@ function configGenerator(Manifest) {
           new webpack.optimize.DedupePlugin(),
           // new webpack.optimize.LimitChunkCountPlugin({maxChunks: 15}),
           // new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10000}),
-          function() {
-            this.plugin("done", function(stats) {
+          function () {
+            this.plugin("done", function (stats) {
               if (stats.compilation.errors && stats.compilation.errors.length) {
                 console.log(stats.compilation.errors)
                 process.exit(1)
@@ -149,7 +146,7 @@ function configGenerator(Manifest) {
 
     // Loaders
     module: {
-      loaders: (function() {
+      loaders: (function () {
         var loaders = []
 
         // Assets
