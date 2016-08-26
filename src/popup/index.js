@@ -6,7 +6,7 @@ import './index.scss'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import EditView from '../components/EditView'
+import ScriptPackageComponent from '../components/ScriptPackageComponent'
 
 import jquery from 'jquery'
 import firebase from 'firebase'
@@ -39,16 +39,30 @@ class Container extends React.Component {
 
   constructor(props) {
     super(props);
-    this.props = props;
-    this.handleSubmit = this.handleSubmit.bind(this); // bind this to method
+    this.reference = reference.child('users/' + auth.currentUser.uid + '/package')
   }
 
   handleSubmit() {
-    let editViewRefs = this.refs.editView.refs;
-    let url = editViewRefs.url.value;
-    let title = editViewRefs.title.value;
-    let description = editViewRefs.description.value;
-    let script = editViewRefs.editor.codeMirror.getValue();
+    console.log("hello!!")
+    console.log(this.refs.editView)
+    console.log(this.refs.editView)
+    let editView = this.refs.editView
+    console.log(editView.title)
+    console.log(editView.url)
+    console.log(editView.description)
+
+    let data = {
+      title: editView.title,
+      url: editView.url,
+      description: editView.description,
+      scripts: editView.scripts,
+    }
+
+    // let editViewRefs = this.refs.editView.refs;
+    // let url = editViewRefs.url.value;
+    // let title = editViewRefs.title.value;
+    // let description = editViewRefs.description.value;
+    // let script = editViewRefs.editor.codeMirror.getValue();
 
     if (scriptRef == null) {
       scriptRef = reference.child('users/' + auth.currentUser.uid + '/scripts').push();
@@ -57,29 +71,31 @@ class Container extends React.Component {
       })
     }
 
-    chrome.tabs.getSelected(null, (tab) => {
-      jquery.get('https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', (data, textStatus, jqXHR) => {
-        chrome.tabs.executeScript(tab.id, {code: data}, (result) => {
-          console.log("executeScript - file", result);
-          chrome.tabs.executeScript(tab.id, {code: script}, (result) => {
-            console.log("executeScript - script", result);
-            scriptRef.set({
-              title: title,
-              url: url,
-              description: description,
-              script: script,
-              modified_at: new Date().getTime(),
-            });
-          });
-        });
-      });
-    });
+    
+
+    // chrome.tabs.getSelected(null, (tab) => {
+    //   jquery.get('https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', (data, textStatus, jqXHR) => {
+    //     chrome.tabs.executeScript(tab.id, {code: data}, (result) => {
+    //       console.log("executeScript - file", result);
+    //       chrome.tabs.executeScript(tab.id, {code: script}, (result) => {
+    //         console.log("executeScript - script", result);
+    //         scriptRef.set({
+    //           title: title,
+    //           url: url,
+    //           description: description,
+    //           script: script,
+    //           modified_at: new Date().getTime(),
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
   }
 
   render() {
     return (
       <div className="container">
-        <EditView onSubmit={this.handleSubmit} ref="editView"/>
+        <ScriptPackageComponent onSubmit={this.handleSubmit.bind(this)} ref="editView"/>
       </div>
     );
   }

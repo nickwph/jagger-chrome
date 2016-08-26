@@ -98,7 +98,7 @@ class Container extends React.Component {
   render() {
     return (
       <div className="container">
-        <EditView onSubmit={this.handleSubmit} ref="editView"/>
+        <ScriptPackageComponent onSubmit={this.handleSubmit} ref="editView"/>
       </div>
     );
   }
